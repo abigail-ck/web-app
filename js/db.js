@@ -4,11 +4,11 @@
    Data model
    ----------
    config (localStorage "jdr:config")
-     { eventTitle, welcome, origin, namePrompt, endsAt(ISO), createdAt(ISO) }
+     { v, eventTitle, welcome, heroWord, origin, namePrompt, endsAt(ISO), createdAt(ISO) }
    user (localStorage "jdr:user")
      { name }
    photo (IndexedDB store "photos", keyPath "id")
-     { id, blob(Blob JPEG), author, style, createdAt(ISO), demo(bool), width, height }
+     { id, blob(Blob JPEG), author, style, note, createdAt(ISO), demo(bool), width, height }
    --------------------------------------------------------- */
 (function (global) {
   const DB_NAME = 'jardin-de-recuerdos';
@@ -77,17 +77,25 @@
       // Default event window: ends 1 day 23 hours from first launch.
       const ends = new Date(now.getTime() + (24 + 23) * 3600 * 1000);
       return {
-        eventTitle: "Emma & Daniel's Wedding Day",
-        welcome: 'Bienvenue au Jardin des Souvenirs.',
+        v: 2,
+        eventTitle: 'La boda de Emma y Daniel',
+        welcome: 'Bienvenido al Jardín de los Recuerdos.',
+        heroWord: 'JARDÍN',
         origin: 'FR.1983',
-        namePrompt: "Veuillez entrer votre nom pour le carnet de l'événement :",
+        namePrompt: 'Escribe tu nombre para el cuaderno del evento:',
         endsAt: ends.toISOString(),
         createdAt: now.toISOString(),
       };
     },
     get() {
       const stored = read(KEY_CONFIG, null);
-      if (stored) return Object.assign(config.defaults(), stored);
+      if (stored && stored.v === 2) return Object.assign(config.defaults(), stored);
+      if (stored) {
+        // Older (pre-Spanish) config: keep the event window, refresh the texts.
+        const migrated = Object.assign(config.defaults(), { endsAt: stored.endsAt, createdAt: stored.createdAt });
+        write(KEY_CONFIG, migrated);
+        return migrated;
+      }
       const d = config.defaults();
       write(KEY_CONFIG, d);
       return d;

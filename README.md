@@ -15,10 +15,11 @@ npx serve .          # o: python3 -m http.server 8080
 
 | Pantalla | Qué hace |
 | --- | --- |
-| **Bienvenida** | Fondo de alstroemeria, etiqueta `FR.1983`, dibujo de una línea de dos flores, mensaje de bienvenida personalizable, campo de nombre y marca de agua `fond`. |
-| **Tablero** | Título del evento, contadores *Moments / Time Left / People* (People abre la lista de contribuidores), botón píldora de cámara, botones cuadrados de galería y descarga, cuadrícula de polaroids con nombre del autor. |
+| **Bienvenida** | Papel beige con grano, foto de anturio rosa enmarcada con una palabra en letras dispersas (configurable), dibujo de una línea de dos flores, mensaje de bienvenida personalizable, campo de nombre y marca de agua `fond`. |
+| **Tablero** | Título del evento, contadores *Momentos / Tiempo restante / Personas* (Personas abre la lista de contribuidores), botón píldora de cámara, botones cuadrados de galería y descarga, cuadrícula de polaroids clásicas (marco blanco, foto cuadrada, banda inferior ancha) con nombre del autor. |
 | **Cámara** | Visor 4:5 con grano animado, bordes rasgados, viñeta y preset *Vintage Film* en vivo. Controles de flash (torch o flash de pantalla), zoom 0.5 / 1x / 2x (hardware si el dispositivo lo soporta, si no recorte), cambio de cámara y disparador de metal texturizado. Si no hay cámara, permite importar una imagen. |
-| **Estilo** | *Choose your photo style*: previsualización en polaroid apilada, swatches Original / Vintage / Black & White con descripciones, **Hold to compare** (vista dividida original vs. estilo) y botón *Next*. El preset por defecto es Vintage. |
+| **Estilo** | *Elige el estilo de tu foto*: previsualización en polaroid, swatches Original / Vintage / Blanco y negro con descripciones, **mantener pulsado para comparar** (vista dividida original vs. estilo), campo de dedicatoria para el reverso y botón *Siguiente*. El preset por defecto es Vintage. |
+| **Detalle** | Al abrir una foto en grande, tocarla la voltea con una animación 3D y muestra la dedicatoria manuscrita en el reverso, con autor y fecha. |
 
 ## Procesado de imagen (`js/filters.js`)
 
@@ -33,7 +34,7 @@ Todo se hace con Canvas 2D, sin dependencias:
 
 - `localStorage` → `jdr:config` (título, mensaje de bienvenida, etiqueta de origen, fecha de fin) y `jdr:user` (nombre).
 - `IndexedDB` (`jardin-de-recuerdos` / store `photos`) → cada foto como Blob JPEG con
-  `{ id, blob, author, style, createdAt, width, height, demo }`.
+  `{ id, blob, author, style, note, createdAt, width, height, demo }`.
 
 El almacenamiento es local al dispositivo; para compartir en tiempo real entre invitados
 basta con sustituir `JDR.db.photos` por un backend (p. ej. Supabase Storage + tabla `photos`)
@@ -42,7 +43,8 @@ manteniendo la misma interfaz `all / add / remove`.
 ## Personalización
 
 El icono de lápiz (bienvenida) o el engranaje (tablero) abren una hoja para editar el título
-del evento, el mensaje de bienvenida, la etiqueta de origen y la fecha de fin (cuenta atrás).
+del evento, el mensaje de bienvenida, la palabra sobre la foto de inicio, la etiqueta de origen
+y la fecha de fin (cuenta atrás).
 Al primer arranque se siembran seis fotos de demostración generadas por código; se retiran
 desde la misma hoja con *Retirer les photos démo*.
 
@@ -55,4 +57,5 @@ de atribuciones (JSZip desde CDN). Sin red, descarga las fotos una a una.
 
 - Serif refinada: *Cormorant Garamond* (títulos, encabezados, etiquetas).
 - Serif rústica: *IM Fell English* (marca de agua `fond`, avatares).
-- Máquina de escribir: *Special Elite* (contadores, nombres, sellos).
+- Sans: *Manrope* (todos los textos pequeños que no son títulos: etiquetas, nombres, descripciones, botones secundarios).
+- Manuscrita: *Caveat* (dedicatoria al reverso de la polaroid).

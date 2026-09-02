@@ -6,19 +6,19 @@
     {
       id: 'original',
       name: 'Original',
-      desc: 'Untouched capture, with a fine layer of film grain only.',
+      desc: 'La captura tal cual, solo con una fina capa de grano de película.',
       grain: 0.05,
     },
     {
       id: 'vintage',
       name: 'Vintage',
-      desc: 'Warm, golden tones with soft fade, lifted blacks and film grain — like a disposable camera in 1983.',
+      desc: 'Tonos cálidos y dorados con desvanecido suave, negros levantados y grano de película, como una cámara desechable de 1983.',
       grain: 0.11,
     },
     {
       id: 'bw',
-      name: 'Black & White',
-      desc: 'Silver halide monochrome. Gentle contrast, faded shadows, heavy grain.',
+      name: 'Blanco y negro',
+      desc: 'Monocromo de haluro de plata. Contraste suave, sombras desvanecidas y grano marcado.',
       grain: 0.14,
     },
   ];

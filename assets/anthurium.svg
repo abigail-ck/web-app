@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="bgp" cx="60%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#f3d4cc"/>
+      <stop offset="60%" stop-color="#e2b8b0"/>
+      <stop offset="100%" stop-color="#b78a86"/>
+    </radialGradient>
+    <linearGradient id="spatheA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7d3cf"/>
+      <stop offset="45%" stop-color="#eeb5b3"/>
+      <stop offset="100%" stop-color="#d48f92"/>
+    </linearGradient>
+    <linearGradient id="spatheB" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f9dcd6"/>
+      <stop offset="50%" stop-color="#efbdb9"/>
+      <stop offset="100%" stop-color="#c98588"/>
+    </linearGradient>
+    <linearGradient id="spadix" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8dcc4"/>
+      <stop offset="50%" stop-color="#fbf3e2"/>
+      <stop offset="100%" stop-color="#cdbfa3"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.6"/></filter>
+    <filter id="verysoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feBlend in2="SourceGraphic" mode="multiply"/>
+    </filter>
+    <filter id="dots" x="0" y="0" width="1" height="1">
+      <feTurbulence type="turbulence" baseFrequency="0.5" numOctaves="1" seed="4"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0.35 0.6"/></feComponentTransfer>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+  <rect width="600" height="800" fill="url(#bgp)"/>
+  <g filter="url(#verysoft)" opacity=".8">
+    <ellipse cx="90" cy="700" rx="200" ry="160" fill="#9c6e70"/>
+    <ellipse cx="540" cy="120" rx="160" ry="140" fill="#f6e0d6"/>
+  </g>
+  <!-- big spathe (heart-shaped, seen close) -->
+  <g filter="url(#soft)">
+    <path d="M300 720 C 120 640, 20 470, 60 300 C 90 180, 210 130, 300 210 C 390 130, 510 180, 540 300 C 580 470, 480 640, 300 720 Z" fill="url(#spatheA)"/>
+    <!-- veins -->
+    <g stroke="#c9878c" stroke-width="2" fill="none" opacity=".45" stroke-linecap="round">
+      <path d="M300 230 C 260 330, 230 450, 250 620"/>
+      <path d="M300 230 C 340 330, 370 450, 350 620"/>
+      <path d="M290 260 C 200 330, 140 420, 120 520"/>
+      <path d="M310 260 C 400 330, 460 420, 480 520"/>
+      <path d="M280 300 C 220 380, 190 470, 200 580"/>
+      <path d="M320 300 C 380 380, 410 470, 400 580"/>
+    </g>
+    <!-- lower lobe / second spathe overlapping -->
+    <path d="M330 800 C 170 760, 90 640, 130 520 C 160 440, 260 430, 320 500 C 380 440, 480 450, 520 540 C 560 660, 480 780, 330 800 Z" fill="url(#spatheB)" opacity=".92"/>
+    <g stroke="#c9878c" stroke-width="2" fill="none" opacity=".4" stroke-linecap="round">
+      <path d="M320 510 C 290 600, 280 680, 300 780"/>
+      <path d="M300 530 C 240 590, 200 660, 200 740"/>
+      <path d="M345 530 C 410 590, 450 660, 450 740"/>
+    </g>
+  </g>
+  <!-- spadix -->
+  <g transform="translate(330 520) rotate(-38)">
+    <path d="M-22 0 C -26 -80, -20 -200, -4 -300 C 4 -340, 20 -340, 24 -300 C 32 -200, 30 -80, 22 0 Z" fill="url(#spadix)"/>
+    <path d="M-22 0 C -26 -80, -20 -200, -4 -300 C 4 -340, 20 -340, 24 -300 C 32 -200, 30 -80, 22 0 Z" fill="#8a7658" filter="url(#dots)" opacity=".55"/>
+    <ellipse cx="0" cy="8" rx="26" ry="14" fill="#9c7f8a" opacity=".5"/>
+  </g>
+  <rect width="600" height="800" filter="url(#grain)" fill="#fff" opacity=".4"/>
+</svg>

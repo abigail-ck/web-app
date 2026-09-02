@@ -45,13 +45,13 @@
   function escapeHTML(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function fmtDate(iso) {
     const d = new Date(iso);
-    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase() + ' ' +
-      d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '').toUpperCase() + ' · ' +
+      d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 
   function timeLeft() {
     const ms = new Date(state.config.endsAt).getTime() - Date.now();
-    if (ms <= 0) return 'Ended';
+    if (ms <= 0) return 'Finalizado';
     const m = Math.floor(ms / 60000);
     const d = Math.floor(m / 1440);
     const h = Math.floor((m % 1440) / 60);
@@ -68,14 +68,19 @@
     bind('eventTitle', c.eventTitle);
     bind('eventTitleShort', shorten(c.eventTitle, 22));
     document.title = `${c.eventTitle} · Jardín de Recuerdos`;
+    renderHeroLetters(c.heroWord);
     renderClock();
+  }
+  function renderHeroLetters(word) {
+    const el = $('#hero-letters');
+    el.innerHTML = Array.from((word || '').trim().toUpperCase()).map((ch) => `<span>${escapeHTML(ch)}</span>`).join('');
   }
   function renderClock() {
     const t = timeLeft();
     bind('timeLeft', t);
-    bind('timeLeftStamp', t === 'Ended' ? 'Ended' : `${t} left`);
+    bind('timeLeftStamp', t === 'Finalizado' ? t : `quedan ${t}`);
   }
-  function renderUser() { bind('userName', state.user ? state.user.name : 'Invité'); }
+  function renderUser() { bind('userName', state.user ? state.user.name : 'Invitado'); }
 
   const objectURLs = new Map();
   function urlFor(photo) {
@@ -96,7 +101,7 @@
     if (index % 3 !== 1) return '';
     const d = new Date(photo.createdAt);
     const n = String(index + 1).padStart(2, '0');
-    return `<span class="polaroid__stamp">№${n} · ${d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>`;
+    return `<span class="polaroid__stamp">Nº${n} · ${d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).replace('.', '')}</span>`;
   }
 
   function renderAlbum() {
@@ -105,7 +110,7 @@
     grid.innerHTML = state.photos.map((p, i) => `
       <figure class="polaroid polaroid--stack polaroid--card" data-id="${p.id}" style="margin:0">
         <div class="polaroid__photo">
-          <img src="${urlFor(p)}" alt="Photo by ${escapeHTML(p.author)}" loading="lazy">
+          <img src="${urlFor(p)}" alt="Foto de ${escapeHTML(p.author)}" loading="lazy">
           <div class="polaroid__grain"></div>
           ${stampFor(p, i)}
         </div>
@@ -119,7 +124,7 @@
   function renderGallery() {
     $('#gallery-grid').innerHTML = state.photos.map((p, i) => `
       <div class="gallery__item" data-id="${p.id}">
-        <img src="${urlFor(p)}" alt="Photo by ${escapeHTML(p.author)}" loading="lazy">
+        <img src="${urlFor(p)}" alt="Foto de ${escapeHTML(p.author)}" loading="lazy">
         ${stampFor(p, i)}
       </div>`).join('');
   }
@@ -131,7 +136,7 @@
         <span class="people__avatar">${escapeHTML(name.charAt(0).toUpperCase())}</span>
         <span class="people__name">${escapeHTML(name)}</span>
         <span class="people__count">${n}</span>
-      </li>`).join('') || '<li class="mono">Personne pour le moment.</li>';
+      </li>`).join('') || '<li class="sans">Nadie por ahora.</li>';
   }
 
   function styleName(id) { const s = filters.STYLES.find((x) => x.id === id); return s ? s.name : id; }
@@ -160,6 +165,7 @@
     f.eventTitle.value = state.config.eventTitle;
     f.welcome.value = state.config.welcome;
     f.origin.value = state.config.origin;
+    f.heroWord.value = state.config.heroWord;
     const d = new Date(state.config.endsAt);
     const pad = (n) => String(n).padStart(2, '0');
     f.endsAt.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -174,22 +180,23 @@
       eventTitle: f.eventTitle.value.trim() || state.config.eventTitle,
       welcome: f.welcome.value.trim() || state.config.welcome,
       origin: f.origin.value.trim(),
+      heroWord: f.heroWord.value.trim() || state.config.heroWord,
     };
     if (f.endsAt.value) patch.endsAt = new Date(f.endsAt.value).toISOString();
     state.config = db.config.set(patch);
     renderConfig();
     closeOverlay('overlay-settings');
-    toast('Enregistré.');
+    toast('Guardado.');
   });
   $('#btn-clear-demo').addEventListener('click', async () => {
     await db.photos.removeWhere((p) => p.demo);
     localStorage.setItem('jdr:demoSeeded', '1');
     await refresh();
     closeOverlay('overlay-settings');
-    toast('Photos démo retirées.');
+    toast('Fotos de muestra retiradas.');
   });
   $('#btn-reset').addEventListener('click', async () => {
-    if (!confirm('Effacer toutes les photos et les réglages de cet appareil ?')) return;
+    if (!confirm('¿Borrar todas las fotos y los ajustes de este dispositivo?')) return;
     await db.photos.clear();
     db.config.reset(); db.user.clear();
     localStorage.removeItem('jdr:demoSeeded');
@@ -206,13 +213,18 @@
     const p = state.photos.find((x) => x.id === id);
     if (!p) return;
     state.detailId = id;
+    $('#flip').classList.remove('is-flipped');
     $('#detail-img').src = urlFor(p);
     $('#detail-author').textContent = p.author;
     $('#detail-style').textContent = styleName(p.style);
     $('#detail-meta').textContent = fmtDate(p.createdAt);
+    $('#detail-note').textContent = p.note || '';
+    $('#detail-back-author').textContent = `— ${p.author}`;
+    $('#detail-back-date').textContent = fmtDate(p.createdAt);
     $('#btn-detail-delete').hidden = !(state.user && p.author === state.user.name);
     openOverlay('overlay-detail');
   }
+  $('#flip').addEventListener('click', () => $('#flip').classList.toggle('is-flipped'));
   $('#album-grid').addEventListener('click', (e) => { const c = e.target.closest('[data-id]'); if (c) openDetail(c.dataset.id); });
   $('#gallery-grid').addEventListener('click', (e) => { const c = e.target.closest('[data-id]'); if (c) openDetail(c.dataset.id); });
 
@@ -231,28 +243,28 @@
     if (i >= 0) download(state.photos[i].blob, filenameFor(state.photos[i], i));
   });
   $('#btn-detail-delete').addEventListener('click', async () => {
-    if (!confirm('Supprimer cette photo ?')) return;
+    if (!confirm('¿Eliminar esta foto?')) return;
     await db.photos.remove(state.detailId);
     closeOverlay('overlay-detail');
     await refresh();
   });
 
   $('#btn-download-all').addEventListener('click', async () => {
-    if (!state.photos.length) { toast('Aucune photo à télécharger.'); return; }
+    if (!state.photos.length) { toast('No hay fotos para descargar.'); return; }
     const slug = state.config.eventTitle.replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'album';
     if (window.JSZip) {
-      toast(`Préparation de l'album (${state.photos.length} photos)…`, 4000);
+      toast(`Preparando el álbum (${state.photos.length} fotos)…`, 4000);
       const zip = new JSZip();
       const folder = zip.folder(slug);
       state.photos.forEach((p, i) => folder.file(filenameFor(p, i), p.blob));
       folder.file('index.json', JSON.stringify(state.photos.map((p, i) => ({
-        file: filenameFor(p, i), author: p.author, style: p.style, createdAt: p.createdAt,
+        file: filenameFor(p, i), author: p.author, style: p.style, note: p.note || '', createdAt: p.createdAt,
       })), null, 2));
       const blob = await zip.generateAsync({ type: 'blob' });
       download(blob, `${slug}.zip`);
     } else {
       // Fallback without JSZip (offline): sequential downloads
-      toast('Téléchargement photo par photo…', 3000);
+      toast('Descargando foto por foto…', 3000);
       for (let i = 0; i < state.photos.length; i++) {
         download(state.photos[i].blob, filenameFor(state.photos[i], i));
         await new Promise((r) => setTimeout(r, 350));
@@ -310,7 +322,7 @@
     state.zoomMode = 'css';
     // Can't go wider than the lens; 0.5x is shown as 1x in CSS mode.
     video.style.setProperty('--zoom', Math.max(1, z));
-    if (z < 1 && !state.hwZoom) toast('Ultra-wide non disponible sur cet appareil.');
+    if (z < 1 && !state.hwZoom) toast('El gran angular no está disponible en este dispositivo.');
   }
   $('#zoom-group').addEventListener('click', (e) => {
     const b = e.target.closest('.zoom-btn'); if (b) applyZoom(parseFloat(b.dataset.zoom));
@@ -357,7 +369,7 @@
     const flashEl = $('#flash-overlay');
     if (state.flash && !state.torchSupported) { flashEl.classList.remove('is-on'); void flashEl.offsetWidth; flashEl.classList.add('is-on'); }
     const c = captureFromVideo();
-    if (!c) { toast('La caméra n\'est pas prête.'); return; }
+    if (!c) { toast('La cámara todavía no está lista.'); return; }
     if (navigator.vibrate) navigator.vibrate(12);
     goToStyle(c);
   });
@@ -366,7 +378,7 @@
     if (!file) return;
     const img = new Image();
     img.onload = () => { URL.revokeObjectURL(img.src); goToStyle(captureFromImage(img)); };
-    img.onerror = () => toast('Image illisible.');
+    img.onerror = () => toast('No se pudo leer la imagen.');
     img.src = URL.createObjectURL(file);
   }
   $('#cam-file').addEventListener('change', (e) => { handleFile(e.target.files[0]); e.target.value = ''; });
@@ -381,6 +393,7 @@
     stopCamera();
     state.capture = captureCanvas;
     state.styleId = filters.DEFAULT_STYLE;
+    $('#input-note').value = '';
     showScreen('screen-style');
     buildSwatches();
     renderPreview();
@@ -411,7 +424,7 @@
       const c = document.createElement('canvas');
       filters.render(state.capture, c, s.id, { width: 128, height: 128, crop: filters.coverCrop(state.capture.width, state.capture.height, 1, 1) });
       thumb.appendChild(c);
-      const label = document.createElement('span'); label.className = 'swatch__label mono'; label.textContent = s.name;
+      const label = document.createElement('span'); label.className = 'swatch__label sans'; label.textContent = s.name;
       el.append(thumb, label);
       el.addEventListener('click', () => { state.styleId = s.id; renderPreview(); });
       wrap.appendChild(el);
@@ -434,15 +447,16 @@
       filters.render(state.capture, out, state.styleId, { width: state.capture.width, height: state.capture.height });
       const blob = await filters.canvasToBlob(out, 0.88);
       const photo = {
-        id: uid(), blob, author: state.user ? state.user.name : 'Invité', style: state.styleId,
+        id: uid(), blob, author: state.user ? state.user.name : 'Invitado', style: state.styleId,
+        note: $('#input-note').value.trim(),
         createdAt: new Date().toISOString(), width: out.width, height: out.height, demo: false,
       };
       await db.photos.add(photo);
       await refresh();
       showScreen('screen-dashboard');
-      toast('Moment ajouté au carnet.');
+      toast('Momento añadido al cuaderno.');
     } catch (err) {
-      console.error(err); toast('Impossible d\'enregistrer la photo.');
+      console.error(err); toast('No se pudo guardar la foto.');
     } finally { btn.disabled = false; }
   });
 
@@ -458,6 +472,10 @@
       ['#f6e6d9', '#e58fa3', '#7d8b5a'], ['#e6dac7', '#7d8b5a', '#a9737a'], ['#fbe7ea', '#c9a262', '#5b6741'],
     ];
     const stylesSeq = ['vintage', 'vintage', 'bw', 'vintage', 'original', 'vintage'];
+    const notes = [
+      'Que nunca dejéis de bailar así.', 'Gracias por dejarnos ser parte de este día.', '',
+      'Para Emma y Daniel, con todo el cariño.', 'Un brindis por lo que viene.', 'Primer baile. Lágrimas garantizadas.',
+    ];
     const now = Date.now();
     for (let i = 0; i < names.length; i++) {
       const w = 640, h = 800;
@@ -484,7 +502,7 @@
       filters.render(c, out, stylesSeq[i], { width: w, height: h });
       const blob = await filters.canvasToBlob(out, 0.8);
       await db.photos.add({
-        id: 'demo-' + i, blob, author: names[i], style: stylesSeq[i], demo: true,
+        id: 'demo-' + i, blob, author: names[i], style: stylesSeq[i], note: notes[i], demo: true,
         createdAt: new Date(now - (i + 1) * 47 * 60000).toISOString(), width: w, height: h,
       });
     }

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#efe6d8">
+  <title>Jardín de Recuerdos · Event Photo Journal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23efe6d8%27/%3E%3Ctext x=%2732%27 y=%2744%27 font-family=%27Georgia,serif%27 font-style=%27italic%27 font-size=%2732%27 text-anchor=%27middle%27 fill=%27%233f2e24%27%3Efond%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IM+Fell+English:ital@0;1&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Global SVG filters (torn paper edges / grain) -->
+<svg class="svg-defs" aria-hidden="true">
+  <defs>
+    <filter id="torn-edge" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="torn-edge-soft" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ================= A. SPLASH ================= -->
+<section id="screen-splash" class="screen screen--splash is-active">
+  <div class="bg bg--flower"></div>
+  <div class="grain"></div>
+  <div class="splash__inner">
+    <div class="splash__top">
+      <span class="serif-fine splash__origin" data-config="origin">FR.1983</span>
+      <button class="icon-btn icon-btn--ghost" id="btn-settings-splash" aria-label="Personalizar" title="Personalizar">
+        <svg viewBox="0 0 24 24"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></svg>
+      </button>
+    </div>
+
+    <div class="splash__center">
+      <img class="splash__lineart" src="assets/line-flowers.svg" alt="">
+      <h1 class="serif-fine splash__welcome" data-config="welcome">Bienvenue au Jardin des Souvenirs.</h1>
+    </div>
+
+    <form class="splash__form" id="form-name" autocomplete="off">
+      <label class="serif-fine field__label" for="input-name" data-config="namePrompt">Veuillez entrer votre nom pour le carnet de l'événement :</label>
+      <div class="field">
+        <input id="input-name" class="field__input mono" type="text" maxlength="24" placeholder="Prénom.N" required>
+        <button class="field__submit" type="submit" aria-label="Entrar">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </form>
+
+    <footer class="splash__footer">
+      <span class="watermark">fond</span>
+    </footer>
+  </div>
+</section>
+
+<!-- ================= B. DASHBOARD ================= -->
+<section id="screen-dashboard" class="screen screen--dashboard">
+  <div class="bg bg--flower bg--blur"></div>
+  <div class="grain"></div>
+
+  <header class="dash__header">
+    <div class="dash__topline">
+      <span class="mono dash__user">— <span data-bind="userName">Invité</span></span>
+      <button class="icon-btn icon-btn--ghost" id="btn-settings-dash" aria-label="Ajustes" title="Ajustes del evento">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </div>
+    <h1 class="serif-fine dash__title" data-bind="eventTitle">Emma &amp; Daniel's Wedding Day</h1>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat__value serif-fine" data-bind="momentsCount">0</span>
+        <span class="stat__label mono">Moments</span>
+      </div>
+      <div class="stat">
+        <span class="stat__value serif-fine" data-bind="timeLeft">—</span>
+        <span class="stat__label mono">Time Left</span>
+      </div>
+      <button class="stat stat--clickable" id="btn-people">
+        <span class="stat__value serif-fine" data-bind="peopleCount">0</span>
+        <span class="stat__label mono">People ›</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="pill-area">
+    <button class="btn-square" id="btn-gallery" aria-label="Ver galería" title="Ver galería">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="btn-pill" id="btn-open-camera">
+      <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      <span class="serif-fine">Capturer un moment</span>
+    </button>
+    <button class="btn-square" id="btn-download-all" aria-label="Descargar álbum" title="Descargar álbum completo">
+      <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>
+    </button>
+  </div>
+
+  <main class="album">
+    <p class="album__empty serif-fine" id="album-empty" hidden>
+      <em>Le carnet est encore vide.</em><br>Soyez le premier à capturer un moment.
+    </p>
+    <div class="album__grid" id="album-grid"></div>
+  </main>
+
+  <footer class="dash__footer">
+    <span class="watermark watermark--dark">fond</span>
+  </footer>
+</section>
+
+<!-- ================= C. CAMERA ================= -->
+<section id="screen-camera" class="screen screen--camera">
+  <div class="cam__top">
+    <button class="icon-btn icon-btn--light" id="btn-cam-close" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+    </button>
+    <span class="mono cam__header"><span data-bind="eventTitleShort">Emma &amp; Daniel's Wedd…</span> · <span data-bind="timeLeft">—</span> left</span>
+    <span class="mono cam__count"><span data-bind="momentsCount">0</span></span>
+  </div>
+
+  <div class="viewfinder-wrap">
+    <div class="viewfinder" id="viewfinder">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <div class="viewfinder__fallback" id="cam-fallback" hidden>
+        <p class="serif-fine"><em>Caméra indisponible.</em></p>
+        <p class="mono">Choisissez une image à la place.</p>
+        <label class="btn-pill btn-pill--sm">
+          <span class="serif-fine">Importer une photo</span>
+          <input type="file" id="cam-file" accept="image/*" capture="environment" hidden>
+        </label>
+      </div>
+      <div class="viewfinder__grain"></div>
+      <div class="viewfinder__vignette"></div>
+      <div class="flash-overlay" id="flash-overlay"></div>
+      <span class="mono viewfinder__stamp" data-bind="timeLeftStamp">1d 23m left</span>
+    </div>
+  </div>
+
+  <div class="cam__controls">
+    <div class="cam__row cam__row--tools">
+      <button class="cam-tool" id="btn-flash" aria-label="Flash" data-state="off">
+        <svg viewBox="0 0 24 24"><path d="M13 2L5 13h6l-1 9 8-12h-6l1-8z"/></svg>
+      </button>
+      <div class="zoom-group" id="zoom-group" role="group" aria-label="Zoom">
+        <button class="zoom-btn mono" data-zoom="0.5">0.5</button>
+        <button class="zoom-btn mono is-active" data-zoom="1">1x</button>
+        <button class="zoom-btn mono" data-zoom="2">2x</button>
+      </div>
+      <button class="cam-tool" id="btn-flip" aria-label="Cambiar cámara">
+        <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3"/><path d="M18 3v4h-4"/><path d="M20 12a8 8 0 0 1-14 5.3"/><path d="M6 21v-4h4"/></svg>
+      </button>
+    </div>
+    <div class="cam__row cam__row--shutter">
+      <label class="cam-tool cam-tool--import" title="Importar imagen">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg>
+        <input type="file" id="cam-file-2" accept="image/*" hidden>
+      </label>
+      <button class="shutter" id="btn-shutter" aria-label="Disparar">
+        <span class="shutter__ring"></span>
+        <span class="shutter__cap"></span>
+      </button>
+      <span class="cam-tool cam-tool--spacer"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= D. STYLE SELECT ================= -->
+<section id="screen-style" class="screen screen--style">
+  <div class="bg bg--linen"></div>
+  <div class="grain"></div>
+
+  <div class="style__top">
+    <button class="icon-btn icon-btn--ghost" id="btn-style-back" aria-label="Retomar">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+    </button>
+    <h2 class="serif-fine style__title">Choose your photo style</h2>
+    <span class="icon-btn icon-btn--ghost" aria-hidden="true"></span>
+  </div>
+
+  <div class="style__preview">
+    <div class="polaroid polaroid--lg polaroid--stack" id="style-preview">
+      <div class="polaroid__photo compare" id="compare">
+        <canvas id="canvas-original"></canvas>
+        <canvas id="canvas-styled"></canvas>
+        <div class="compare__divider" hidden><span class="mono">Original</span><span class="mono" data-bind="styleLabel">Vintage</span></div>
+        <div class="polaroid__grain"></div>
+      </div>
+      <div class="polaroid__caption">
+        <span class="mono" data-bind="userName">Invité</span>
+        <span class="mono polaroid__hint">Hold to compare</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="style__info">
+    <h3 class="serif-fine style__name" data-bind="styleName">Vintage</h3>
+    <p class="mono style__desc" data-bind="styleDesc">Warm, golden tones with soft fade and fine film grain.</p>
+  </div>
+
+  <div class="swatches" id="swatches"></div>
+
+  <div class="style__actions">
+    <button class="btn-pill" id="btn-style-next">
+      <span class="serif-fine">Next</span>
+      <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ================= OVERLAYS ================= -->
+<div class="overlay" id="overlay-gallery" hidden>
+  <div class="overlay__bar">
+    <h2 class="serif-fine">Galerie</h2>
+    <span class="mono"><span data-bind="momentsCount">0</span> moments</span>
+    <button class="icon-btn icon-btn--ghost" data-close="overlay-gallery" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
+  </div>
+  <div class="gallery__grid" id="gallery-grid"></div>
+</div>
+
+<div class="overlay" id="overlay-people" hidden>
+  <div class="overlay__bar">
+    <h2 class="serif-fine">People</h2>
+    <span class="mono"><span data-bind="peopleCount">0</span> contributeurs</span>
+    <button class="icon-btn icon-btn--ghost" data-close="overlay-people" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
+  </div>
+  <ul class="people" id="people-list"></ul>
+</div>
+
+<div class="overlay overlay--detail" id="overlay-detail" hidden>
+  <div class="overlay__bar">
+    <span class="mono" id="detail-meta"></span>
+    <button class="icon-btn icon-btn--ghost" data-close="overlay-detail" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
+  </div>
+  <div class="detail__body">
+    <div class="polaroid polaroid--lg polaroid--stack">
+      <div class="polaroid__photo"><img id="detail-img" alt=""><div class="polaroid__grain"></div></div>
+      <div class="polaroid__caption"><span class="mono" id="detail-author"></span><span class="mono" id="detail-style"></span></div>
+    </div>
+    <div class="detail__actions">
+      <button class="btn-square" id="btn-detail-download" aria-label="Descargar"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg></button>
+      <button class="btn-square btn-square--danger" id="btn-detail-delete" aria-label="Eliminar" hidden><svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay overlay--sheet" id="overlay-settings" hidden>
+  <form class="sheet" id="form-settings">
+    <div class="overlay__bar">
+      <h2 class="serif-fine">Personnaliser</h2>
+      <button type="button" class="icon-btn icon-btn--ghost" data-close="overlay-settings" aria-label="Cerrar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg></button>
+    </div>
+    <label class="serif-fine field__label">Titre de l'événement
+      <input class="field__input mono" name="eventTitle" type="text" maxlength="60">
+    </label>
+    <label class="serif-fine field__label">Message de bienvenue
+      <input class="field__input mono" name="welcome" type="text" maxlength="90">
+    </label>
+    <label class="serif-fine field__label">Étiquette d'origine (coin supérieur)
+      <input class="field__input mono" name="origin" type="text" maxlength="12">
+    </label>
+    <label class="serif-fine field__label">Fin de l'événement
+      <input class="field__input mono" name="endsAt" type="datetime-local">
+    </label>
+    <div class="sheet__row">
+      <button type="submit" class="btn-pill btn-pill--sm"><span class="serif-fine">Enregistrer</span></button>
+      <button type="button" class="btn-text mono" id="btn-clear-demo">Retirer les photos démo</button>
+      <button type="button" class="btn-text mono btn-text--danger" id="btn-reset">Tout effacer</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast mono" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+<script src="js/db.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

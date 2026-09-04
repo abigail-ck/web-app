@@ -12,13 +12,12 @@ interface SplashScreenProps {
 }
 
 /**
- * Splash: the event photo fills the whole screen (public/splash-bg.jpg,
- * with an SVG stand-in until that file exists). Text sits on top of the
- * photo over a soft cream gradient that keeps it legible on any image.
+ * Splash: the event photo (public/splash-bg.jpg) fills the whole screen.
+ * Text sits on top of the photo over a soft cream gradient that keeps it
+ * legible on any image.
  */
 export const SplashScreen: React.FC<SplashScreenProps> = ({ eventConfig, onEnter, initialUserName = '' }) => {
   const [userName, setUserName] = useState(initialUserName);
-  const [bgSrc, setBgSrc] = useState('/splash-bg.jpg');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +29,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ eventConfig, onEnter
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[#F4F0E6] text-[#2C241E] select-none">
       {/* Full-bleed photo */}
-      <img
-        src={bgSrc}
-        onError={() => setBgSrc('/splash-bg.svg')}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover object-center"
-      />
+      <img src="/splash-bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
       <div className="absolute inset-0 film-grain pointer-events-none" />
       {/* Legibility veils: a light wash at the top for the stamp, a stronger one at the bottom for the copy */}
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#F4F0E6]/70 to-transparent pointer-events-none" />

@@ -68,7 +68,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
           <span className="hidden sm:inline">Volver a tomar</span>
         </button>
 
-        <h1 className="font-display text-base sm:text-2xl text-[#FAF7F0] font-semibold truncate">
+        <h1 className="font-display text-base sm:text-xl text-[#FAF7F0] font-medium truncate">
           Elige el estilo
         </h1>
 
@@ -143,7 +143,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
 
         {/* Selected Style Info Card */}
         <div className="mt-3 text-center max-w-sm px-2">
-          <h2 className="font-display text-lg sm:text-xl text-[#FAF7F0] font-semibold">
+          <h2 className="font-display text-lg text-[#FAF7F0] font-medium">
             {styleConfig.name}
           </h2>
           <p className="font-ui text-xs text-[#FAF7F0]/70 mt-1 leading-relaxed line-clamp-2">
@@ -199,7 +199,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
         <div className="w-full max-w-xs">
           <button
             onClick={handleConfirm}
-            className="w-full bg-[#FAF7F0] text-[#1A1614] hover:bg-[#F4EFE6] active:scale-95 font-display font-semibold text-base sm:text-lg py-3.5 px-6 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+            className="w-full bg-[#FAF7F0] text-[#1A1614] hover:bg-[#F4EFE6] active:scale-95 font-display font-medium text-base sm:text-lg py-3.5 px-6 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer group"
           >
             <Sparkles size={18} className="text-[#C5A059]" />
             <span>Guardar en el Diario</span>

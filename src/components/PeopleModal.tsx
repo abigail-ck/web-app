@@ -33,7 +33,7 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({ isOpen, onClose, contr
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-[#D4C7B5]/60">
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#2C241E] leading-none">Invitados</h2>
+            <h2 className="font-display text-xl font-medium text-[#2C241E] leading-none">Invitados</h2>
             <p className="font-ui text-xs text-[#68795A] mt-1.5 tabular-nums">{totalPeople} personas en el evento</p>
           </div>
           <button

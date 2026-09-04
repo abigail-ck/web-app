@@ -8,7 +8,6 @@ import { CameraView } from './components/CameraView';
 import { PhotoStyleSelector } from './components/PhotoStyleSelector';
 import { GalleryView } from './components/GalleryView';
 import { PeopleModal } from './components/PeopleModal';
-import { DownloadAlbumModal } from './components/DownloadAlbumModal';
 import { PhotoDetailModal } from './components/PhotoDetailModal';
 import { RevealScreen } from './components/RevealScreen';
 import { createPolaroidExport } from './utils/filmProcessing';
@@ -52,7 +51,6 @@ export default function App() {
 
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isPeopleModalOpen, setIsPeopleModalOpen] = useState(false);
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isRevealOpen, setIsRevealOpen] = useState(false);
   const [selectedPhotoForDetail, setSelectedPhotoForDetail] = useState<EventPhoto | null>(null);
 
@@ -80,6 +78,16 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('jardin_contributors', JSON.stringify(contributors));
   }, [contributors]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jardin_user');
+    setUserName('');
+    setIsGalleryOpen(false);
+    setIsPeopleModalOpen(false);
+    setIsRevealOpen(false);
+    setSelectedPhotoForDetail(null);
+    setScreen('splash');
+  };
 
   const handleEnterFromSplash = (name: string) => {
     setUserName(name);
@@ -196,9 +204,9 @@ export default function App() {
           currentUser={currentUser}
           onOpenLiveCamera={() => setScreen('camera')}
           onOpenGallery={() => setIsGalleryOpen(true)}
-          onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
           onOpenPeopleModal={() => setIsPeopleModalOpen(true)}
           onOpenReveal={() => setIsRevealOpen(true)}
+          onLogout={handleLogout}
           onLikePhoto={handleLikePhoto}
           onSelectPhoto={setSelectedPhotoForDetail}
           onDownloadSinglePhoto={handleDownloadSinglePhoto}
@@ -230,7 +238,6 @@ export default function App() {
           onClose={() => setIsGalleryOpen(false)}
           onLikePhoto={handleLikePhoto}
           onSelectPhoto={setSelectedPhotoForDetail}
-          onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
           onOpenReveal={() => setIsRevealOpen(true)}
           onOpenCamera={() => {
             setIsGalleryOpen(false);
@@ -245,13 +252,6 @@ export default function App() {
         contributors={contributors}
         currentUser={currentUser}
         totalPeople={eventConfig.totalPeople}
-      />
-
-      <DownloadAlbumModal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
-        photos={myPhotos}
-        eventConfig={eventConfig}
       />
 
       <RevealScreen

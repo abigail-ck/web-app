@@ -12,15 +12,13 @@ interface SplashScreenProps {
 }
 
 /**
- * Splash: grainy beige paper, a framed close-up photo with the letters of
- * `heroWord` scattered over it, the welcome line and a minimal name field.
+ * Splash: the event photo fills the whole screen (public/splash-bg.jpg,
+ * with an SVG stand-in until that file exists). Text sits on top of the
+ * photo over a soft cream gradient that keeps it legible on any image.
  */
-export const SplashScreen: React.FC<SplashScreenProps> = ({
-  eventConfig,
-  onEnter,
-  initialUserName = '',
-}) => {
+export const SplashScreen: React.FC<SplashScreenProps> = ({ eventConfig, onEnter, initialUserName = '' }) => {
   const [userName, setUserName] = useState(initialUserName);
+  const [bgSrc, setBgSrc] = useState('/splash-bg.jpg');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,120 +28,105 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   const letters = Array.from((eventConfig.heroWord || '').trim().toUpperCase());
 
   return (
-    <div className="relative min-h-dvh w-full flex flex-col justify-between items-center overflow-hidden bg-paper-beige paper-grain text-[#2C241E] select-none">
-      {/* Top bar: origin stamp */}
-      <header className="relative z-10 pt-8 sm:pt-10 w-full max-w-lg px-6 flex items-center justify-between">
-        <motion.span
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="font-display text-xs sm:text-sm tracking-[0.3em] text-[#5C473A]"
-        >
-          {eventConfig.dateOrigin}
-        </motion.span>
-      </header>
+    <div className="relative h-dvh w-full overflow-hidden bg-[#F4F0E6] text-[#2C241E] select-none">
+      {/* Full-bleed photo */}
+      <img
+        src={bgSrc}
+        onError={() => setBgSrc('/splash-bg.svg')}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      <div className="absolute inset-0 film-grain pointer-events-none" />
+      {/* Legibility veils: a light wash at the top for the stamp, a stronger one at the bottom for the copy */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#F4F0E6]/70 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-[#F4F0E6] via-[#F4F0E6]/85 to-transparent pointer-events-none" />
 
-      {/* Center: framed photo with scattered letters, line art and welcome */}
-      <main className="relative z-10 w-full max-w-lg px-6 py-4 flex flex-col items-center text-center gap-5">
-        <motion.figure
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.1 }}
-          className="relative m-0 w-[62vw] max-w-[300px] aspect-[3/4] overflow-hidden shadow-[0_1px_2px_rgba(44,36,30,0.12),0_14px_34px_rgba(44,36,30,0.14)]"
-        >
-          <img
-            src="/anthurium.svg"
-            alt=""
-            className="w-full h-full object-cover filter saturate-[0.85] contrast-[0.92] brightness-[1.03]"
-          />
-          <div className="absolute inset-0 film-grain pointer-events-none" />
-          {/* Scattered letters, alternating left / right like a typeset poem */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-[10%_14%] z-20 flex flex-col justify-between pointer-events-none font-display text-xl sm:text-2xl tracking-[0.08em] text-[#FFFAF4]/95 [text-shadow:0_0_6px_rgba(120,60,60,0.25)]"
+      {/* Scattered letters along the right edge */}
+      <div
+        aria-hidden="true"
+        className="absolute right-[7%] top-[12%] bottom-[46%] z-10 flex flex-col justify-between pointer-events-none font-display text-lg sm:text-xl tracking-[0.1em] text-[#3F2E24]/70"
+      >
+        {letters.map((ch, i) => (
+          <span key={`${ch}-${i}`} className={`block leading-none ${i % 2 ? '-translate-x-4' : 'translate-x-1'}`}>
+            {ch}
+          </span>
+        ))}
+      </div>
+
+      <div className="relative z-10 h-full flex flex-col justify-between">
+        <header className="pt-safe px-6 pt-8 w-full max-w-lg mx-auto">
+          <motion.span
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="font-ui text-[11px] tracking-[0.3em] text-[#5C473A]"
           >
-            {letters.map((ch, i) => (
-              <span
-                key={`${ch}-${i}`}
-                className={`block leading-none ${
-                  i % 3 === 2 ? 'text-center pr-[6%]' : i % 2 === 0 ? 'text-right pr-[12%]' : 'text-left pl-[18%]'
-                }`}
-              >
-                {ch}
-              </span>
-            ))}
-          </div>
-        </motion.figure>
+            {eventConfig.dateOrigin}
+          </motion.span>
+        </header>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, delay: 0.3 }}
-          className="flex flex-col items-center gap-3"
+        <motion.footer
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.15 }}
+          className="w-full max-w-lg mx-auto px-6 pb-safe pb-6 flex flex-col gap-6"
         >
-          <FloralTwoFlowersSvg size={54} color="#5C473A" className="opacity-80" />
-          <h1 className="font-display text-3xl sm:text-4xl font-medium leading-tight text-[#3F2E24] max-w-[20ch] [text-wrap:balance]">
-            {eventConfig.welcomeTitle}
-          </h1>
-          <p className="font-ui text-xs sm:text-sm text-[#5C473A]/80 max-w-sm leading-relaxed">
-            {eventConfig.welcomeSubtitle}
-          </p>
-        </motion.div>
-      </main>
-
-      {/* Name form + watermark */}
-      <footer className="relative z-10 w-full max-w-lg px-6 pb-8 flex flex-col gap-8">
-        <form onSubmit={handleSubmit} className="w-full">
-          <label htmlFor="guest-name-input" className="block font-ui text-sm text-[#5C473A] mb-2">
-            Escribe tu nombre para el cuaderno del evento:
-          </label>
-          <div className="flex items-center gap-2 border-b border-[#3F2E24]/40 pb-1.5 focus-within:border-[#3F2E24]">
-            <input
-              id="guest-name-input"
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Nombre.A"
-              maxLength={24}
-              className="flex-1 min-w-0 bg-transparent font-ui text-lg text-[#2C241E] placeholder-[#3F2E24]/35 py-1.5 focus:outline-none"
-              autoFocus
-            />
-            <button
-              type="submit"
-              aria-label="Entrar"
-              className="w-10 h-10 rounded-full flex items-center justify-center text-[#3F2E24] hover:bg-[#3F2E24]/8 active:scale-95 transition-all cursor-pointer"
-            >
-              <ArrowRight size={20} />
-            </button>
+          <div className="flex flex-col gap-3">
+            <FloralTwoFlowersSvg size={44} color="#5C473A" className="opacity-75" />
+            <h1 className="font-display text-[1.75rem] sm:text-4xl font-medium leading-[1.12] text-[#2C241E] max-w-[18ch] [text-wrap:balance]">
+              {eventConfig.welcomeTitle}
+            </h1>
+            <p className="font-ui text-[13px] sm:text-sm text-[#5C473A]/90 max-w-[42ch] leading-relaxed">
+              {eventConfig.welcomeSubtitle}
+            </p>
           </div>
 
-          <div className="mt-3 flex items-center gap-2 flex-wrap font-ui text-[11px] text-[#5C473A]/70">
-            <span>Sugerencias:</span>
-            {['Emma.D', 'Daniel.M', 'Brian.S', 'Yen.K'].map((name) => (
+          <form onSubmit={handleSubmit} className="w-full">
+            <label htmlFor="guest-name-input" className="block font-ui text-xs text-[#5C473A] mb-1.5">
+              Escribe tu nombre para el cuaderno del evento
+            </label>
+            <div className="flex items-center gap-2 border-b border-[#3F2E24]/45 pb-1 focus-within:border-[#3F2E24]">
+              <input
+                id="guest-name-input"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Nombre.A"
+                maxLength={24}
+                autoComplete="off"
+                className="flex-1 min-w-0 bg-transparent font-ui text-lg text-[#2C241E] placeholder-[#3F2E24]/35 py-1.5 focus:outline-none"
+              />
               <button
-                key={name}
-                type="button"
-                onClick={() => {
-                  setUserName(name);
-                  onEnter(name);
-                }}
-                className="underline underline-offset-2 hover:text-[#3F2E24] cursor-pointer"
+                type="submit"
+                aria-label="Entrar"
+                className="w-11 h-11 rounded-full flex items-center justify-center text-[#3F2E24] hover:bg-[#3F2E24]/8 active:scale-95 transition-all cursor-pointer"
               >
-                {name}
+                <ArrowRight size={20} />
               </button>
-            ))}
-          </div>
-        </form>
+            </div>
+            <div className="mt-2.5 flex items-center gap-2 flex-wrap font-ui text-[11px] text-[#5C473A]/75">
+              <span>Sugerencias:</span>
+              {['Emma.D', 'Daniel.M', 'Brian.S', 'Yen.K'].map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => {
+                    setUserName(name);
+                    onEnter(name);
+                  }}
+                  className="underline underline-offset-2 hover:text-[#3F2E24] cursor-pointer"
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          </form>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="flex justify-center"
-        >
-          <WatermarkFond size="lg" variant="dark" />
-        </motion.div>
-      </footer>
+          <div className="flex justify-center">
+            <WatermarkFond size="md" variant="dark" />
+          </div>
+        </motion.footer>
+      </div>
     </div>
   );
 };

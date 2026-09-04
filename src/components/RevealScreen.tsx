@@ -65,7 +65,7 @@ export const RevealScreen: React.FC<RevealScreenProps> = ({ isOpen, eventConfig,
         </div>
 
         <div className="max-w-sm flex flex-col items-center gap-3">
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-[#3F2E24] [text-wrap:balance]">
+          <h1 className="font-display text-2xl sm:text-[1.75rem] font-medium text-[#3F2E24] [text-wrap:balance]">
             El álbum se está revelando
           </h1>
           <p className="font-ui text-sm text-[#5C473A]/85 leading-relaxed">
@@ -76,14 +76,14 @@ export const RevealScreen: React.FC<RevealScreenProps> = ({ isOpen, eventConfig,
 
         <div className="w-full max-w-xs bg-[#FAF7F0]/80 border border-[#D4C7B5] rounded-2xl py-4 px-3 grid grid-cols-2 divide-x divide-[#D4C7B5]/60">
           <div>
-            <div className="font-display text-2xl font-semibold text-[#68795A] tabular-nums flex items-center justify-center gap-1.5">
+            <div className="font-display text-xl font-medium text-[#68795A] tabular-nums flex items-center justify-center gap-1.5">
               <Hourglass size={16} />
               {formatCountdown(timeLeft)}
             </div>
             <div className="font-ui text-[10px] uppercase tracking-wider text-[#2C241E]/60 mt-0.5">Para revelar</div>
           </div>
           <div>
-            <div className="font-display text-2xl font-semibold text-[#2C241E] tabular-nums">
+            <div className="font-display text-xl font-medium text-[#2C241E] tabular-nums">
               {totalMoments.toLocaleString('es-ES')}
             </div>
             <div className="font-ui text-[10px] uppercase tracking-wider text-[#2C241E]/60 mt-0.5">En el carrete</div>
@@ -92,7 +92,7 @@ export const RevealScreen: React.FC<RevealScreenProps> = ({ isOpen, eventConfig,
 
         <button
           disabled
-          className="font-display font-semibold text-sm bg-[#2C241E]/15 text-[#2C241E]/50 px-6 py-3 rounded-full cursor-not-allowed"
+          className="font-display font-medium text-sm bg-[#2C241E]/15 text-[#2C241E]/50 px-6 py-3 rounded-full cursor-not-allowed"
         >
           Ver todos los recuerdos · próximamente
         </button>

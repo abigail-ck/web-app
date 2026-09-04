@@ -11,7 +11,6 @@ interface GalleryViewProps {
   onClose: () => void;
   onLikePhoto: (id: string) => void;
   onSelectPhoto: (photo: EventPhoto) => void;
-  onOpenDownloadModal: () => void;
   onOpenReveal: () => void;
   onOpenCamera: () => void;
 }
@@ -21,7 +20,6 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
   onClose,
   onLikePhoto,
   onSelectPhoto,
-  onOpenDownloadModal,
   onOpenReveal,
   onOpenCamera,
 }) => {
@@ -66,7 +64,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             <X size={22} />
           </button>
           <div className="min-w-0">
-            <h1 className="font-display text-xl sm:text-3xl text-[#2C241E] font-semibold leading-none truncate">Mis recuerdos</h1>
+            <h1 className="font-display text-xl sm:text-2xl text-[#2C241E] font-medium leading-none truncate">Mis recuerdos</h1>
             <p className="font-ui text-xs text-[#68795A] mt-1 tabular-nums">
               {filteredPhotos.length} de {photos.length} fotos
             </p>
@@ -85,15 +83,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               }`}
             >
               <Play size={13} />
-              <span className="hidden sm:inline">Pase</span>
-            </button>
-          )}
-          {photos.length > 0 && (
-            <button
-              onClick={onOpenDownloadModal}
-              className="h-9 px-3 bg-[#2C241E] text-[#FAF7F0] hover:bg-[#3D2B24] rounded-full font-ui text-xs transition-all cursor-pointer"
-            >
-              Descargar
+              <span>Pase de fotos</span>
             </button>
           )}
         </div>
@@ -144,7 +134,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             </p>
             <button
               onClick={onOpenCamera}
-              className="font-display font-semibold text-sm bg-[#2C241E] text-[#FAF7F0] px-5 py-2.5 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"
+              className="font-display font-medium text-sm bg-[#2C241E] text-[#FAF7F0] px-5 py-2.5 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"
             >
               Capturar un momento
             </button>
@@ -194,7 +184,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             <Lock size={18} />
           </span>
           <span className="flex-1 min-w-0">
-            <span className="block font-display font-semibold text-sm text-[#2C241E]">Todos los recuerdos del evento</span>
+            <span className="block font-display font-medium text-sm text-[#2C241E]">Todos los recuerdos del evento</span>
             <span className="block font-ui text-xs text-[#2C241E]/60 mt-0.5">Se revelarán cuando termine el evento.</span>
           </span>
           <ArrowRight size={18} className="shrink-0 text-[#2C241E]/50" />

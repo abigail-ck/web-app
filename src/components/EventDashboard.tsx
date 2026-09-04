@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Grid, Download, ChevronLeft, ChevronRight, Lock, ArrowRight } from 'lucide-react';
+import { Camera, Grid, ChevronLeft, ChevronRight, Lock, ArrowRight, LogOut } from 'lucide-react';
 import { EventConfig, EventPhoto } from '../types';
 import { PolaroidCard } from './PolaroidCard';
 import { WatermarkFond } from './WatermarkFond';
@@ -12,9 +12,9 @@ interface EventDashboardProps {
   currentUser: string;
   onOpenLiveCamera: () => void;
   onOpenGallery: () => void;
-  onOpenDownloadModal: () => void;
   onOpenPeopleModal: () => void;
   onOpenReveal: () => void;
+  onLogout: () => void;
   onLikePhoto: (photoId: string) => void;
   onSelectPhoto: (photo: EventPhoto) => void;
   onDownloadSinglePhoto: (photo: EventPhoto) => void;
@@ -36,9 +36,9 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
   currentUser,
   onOpenLiveCamera,
   onOpenGallery,
-  onOpenDownloadModal,
   onOpenPeopleModal,
   onOpenReveal,
+  onLogout,
   onLikePhoto,
   onSelectPhoto,
   onDownloadSinglePhoto,
@@ -77,30 +77,38 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
       <header className="relative z-10 w-full pt-safe px-4 sm:px-8 max-w-3xl mx-auto flex flex-col items-center text-center">
         <div className="w-full flex items-center justify-between font-ui text-[11px] tracking-[0.2em] uppercase text-[#68795A] pt-2">
           <span>{eventConfig.dateOrigin}</span>
-          <span className="normal-case tracking-normal text-[#2C241E]/60">— {currentUser}</span>
+          <button
+            onClick={onLogout}
+            title="Salir y volver a la pantalla principal"
+            className="normal-case tracking-normal text-[#2C241E]/60 hover:text-[#2C241E] flex items-center gap-1.5 -mr-2 px-2 py-1.5 rounded-full hover:bg-[#2C241E]/5 transition-colors cursor-pointer"
+          >
+            <span className="max-w-[32vw] truncate">{currentUser}</span>
+            <LogOut size={13} />
+            <span className="sr-only">Salir</span>
+          </button>
         </div>
 
-        <h1 className="font-display text-[1.75rem] leading-[1.1] sm:text-4xl md:text-5xl font-semibold text-[#2C241E] mt-3 [text-wrap:balance]">
+        <h1 className="font-display text-2xl leading-[1.15] sm:text-3xl md:text-[2.125rem] font-medium text-[#2C241E] mt-4 [text-wrap:balance]">
           {eventConfig.title}
         </h1>
-        <p className="font-ui text-sm sm:text-base text-[#68795A] mt-1.5">{eventConfig.subtitle}</p>
+        <p className="font-ui text-[13px] sm:text-sm text-[#68795A] mt-1.5">{eventConfig.subtitle}</p>
 
         <VintageFlourish className="my-4 opacity-75" />
 
         {/* Counters */}
-        <div className="w-full max-w-md bg-[#FAF7F0]/80 backdrop-blur-sm border border-[#D4C7B5] rounded-2xl py-3.5 px-2 sm:px-6 shadow-sm">
+        <div className="w-full max-w-sm bg-[#FAF7F0]/80 backdrop-blur-sm border border-[#D4C7B5] rounded-2xl py-3 px-2 sm:px-4 shadow-sm">
           <div className="grid grid-cols-3 divide-x divide-[#D4C7B5]/60 text-center">
             <div className="px-1">
-              <div className="font-display text-xl sm:text-3xl font-semibold text-[#2C241E] tabular-nums">
+              <div className="font-display text-lg sm:text-[1.375rem] font-medium text-[#2C241E] tabular-nums leading-none">
                 {totalMoments.toLocaleString('es-ES')}
               </div>
-              <div className="font-ui text-[10px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">Momentos</div>
+              <div className="font-ui text-[10px] text-[#2C241E]/60 uppercase tracking-wider mt-1.5">Momentos</div>
             </div>
             <div className="px-1">
-              <div className="font-display text-xl sm:text-3xl font-semibold text-[#68795A] tabular-nums">
+              <div className="font-display text-lg sm:text-[1.375rem] font-medium text-[#68795A] tabular-nums leading-none">
                 {formatCountdown(timeLeft)}
               </div>
-              <div className="font-ui text-[10px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5 leading-tight">
+              <div className="font-ui text-[10px] text-[#2C241E]/60 uppercase tracking-wider mt-1.5 leading-tight">
                 Tiempo restante
               </div>
             </div>
@@ -108,16 +116,16 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
               onClick={onOpenPeopleModal}
               className="px-1 rounded-lg hover:bg-[#2C241E]/5 active:bg-[#2C241E]/10 transition-colors cursor-pointer"
             >
-              <div className="font-display text-xl sm:text-3xl font-semibold text-[#C48B9F] tabular-nums">
+              <div className="font-display text-lg sm:text-[1.375rem] font-medium text-[#C48B9F] tabular-nums leading-none">
                 {eventConfig.totalPeople}
               </div>
-              <div className="font-ui text-[10px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">Invitados ›</div>
+              <div className="font-ui text-[10px] text-[#2C241E]/60 uppercase tracking-wider mt-1.5">Invitados ›</div>
             </button>
           </div>
         </div>
 
         {/* Main actions */}
-        <div className="mt-5 flex items-center justify-center gap-3 w-full max-w-md">
+        <div className="mt-4 flex items-center justify-center gap-3 w-full max-w-sm">
           <button
             onClick={onOpenGallery}
             aria-label="Mis recuerdos"
@@ -134,16 +142,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             <span className="shrink-0 w-8 h-8 rounded-full bg-[#2C241E] text-[#FAF7F0] flex items-center justify-center">
               <Camera size={17} />
             </span>
-            <span className="font-display font-semibold text-base sm:text-lg truncate"><span className="sm:hidden">Capturar</span><span className="hidden sm:inline">Capturar un momento</span></span>
-          </button>
-
-          <button
-            onClick={onOpenDownloadModal}
-            aria-label="Descargar mis polaroids"
-            title="Descargar mis polaroids"
-            className="shrink-0 w-13 h-13 sm:w-14 sm:h-14 bg-[#FAF7F0] hover:bg-[#F4EFE6] text-[#2C241E] rounded-2xl border border-[#D4C7B5] shadow-md flex items-center justify-center transition-all active:scale-95 cursor-pointer"
-          >
-            <Download size={22} />
+            <span className="font-display font-medium text-base truncate">Capturar un momento</span>
           </button>
         </div>
       </header>
@@ -152,7 +151,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
       <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 pt-8 pb-6 flex flex-col items-center gap-6">
         <div className="w-full flex items-center justify-between gap-3 pb-2 border-b border-[#D4C7B5]/60">
           <div className="flex items-baseline gap-2 min-w-0">
-            <h2 className="font-display text-lg font-semibold text-[#2C241E] truncate">Mis recuerdos</h2>
+            <h2 className="font-display text-base sm:text-lg font-medium text-[#2C241E] truncate">Mis recuerdos</h2>
             <span className="shrink-0 font-ui text-[11px] text-[#68795A] bg-[#68795A]/10 px-2 py-0.5 rounded-full tabular-nums">
               {myPhotos.length}
             </span>
@@ -189,7 +188,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             </p>
             <button
               onClick={onOpenLiveCamera}
-              className="font-display font-semibold text-sm bg-[#2C241E] text-[#FAF7F0] px-5 py-2.5 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"
+              className="font-display font-medium text-sm bg-[#2C241E] text-[#FAF7F0] px-5 py-2.5 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"
             >
               Tomar la primera foto
             </button>
@@ -278,7 +277,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             <Lock size={18} />
           </span>
           <span className="flex-1 min-w-0">
-            <span className="block font-display font-semibold text-sm text-[#2C241E]">Todos los recuerdos del evento</span>
+            <span className="block font-display font-medium text-sm text-[#2C241E]">Todos los recuerdos del evento</span>
             <span className="block font-ui text-xs text-[#2C241E]/60 mt-0.5">
               Las fotos de los demás se revelan en {formatCountdown(timeLeft)}.
             </span>

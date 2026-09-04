@@ -2,11 +2,10 @@
 
 @layer base {
   :root {
-    --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
     --font-ui: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
-    --font-hand: 'Caveat', 'Segoe Script', cursive;
-    --font-script: 'Italianno', cursive;
+    --font-hand: 'Patrick Hand', 'Segoe Print', 'Bradley Hand', cursive;
+    --font-logo: 'Cormorant Garamond', Georgia, serif;
     --color-bg-linen: #F7F3EB;
     --color-paper: #FBF9F4;
     --color-rose: #C48B9F;
@@ -15,37 +14,48 @@
     --color-gold: #C5A059;
   }
 
+  html, body { height: 100%; }
   body {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     background-color: var(--color-bg-linen);
     color: var(--color-espresso);
     overflow-x: hidden;
   }
 }
 
-.font-serif-vintage {
-  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+/* Type system
+   display  → Instrument Sans: titles, headings, main buttons
+   ui       → Manrope: subtitles, labels, data, small text
+   hand     → Patrick Hand: legible handwriting for dedications
+   logo     → Cormorant Garamond: only the 'fond' watermark            */
+.font-display {
+  font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.01em;
 }
 
-.font-display-chic {
-  font-family: 'Playfair Display', Georgia, serif;
-}
-
-/* Small non-title text: Manrope */
 .font-ui {
   font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
-/* Handwritten dedication on the back of a polaroid */
 .font-hand {
-  font-family: 'Caveat', 'Segoe Script', cursive;
+  font-family: 'Patrick Hand', 'Segoe Print', 'Bradley Hand', cursive;
 }
 
-.font-script-hand {
-  font-family: 'Italianno', cursive;
+.font-logo {
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
+
+/* Full-height that follows the mobile browser chrome */
+.min-h-dvh { min-height: 100vh; min-height: 100dvh; }
+.h-dvh { height: 100vh; height: 100dvh; }
+.pt-safe { padding-top: max(1rem, env(safe-area-inset-top)); }
+.pb-safe { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+
+/* Hide scrollbars on horizontal strips without disabling scroll */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
 
 /* Vintage Paper & Linen Texture */
 .bg-linen-pattern {

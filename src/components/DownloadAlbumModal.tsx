@@ -64,11 +64,12 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2C241E]/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-[#2C241E]/70 backdrop-blur-sm">
+      <div className="absolute inset-0" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative w-full max-w-md bg-[#FAF7F0] border border-[#D4C7B5] rounded-2xl shadow-2xl p-6 sm:p-8"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative w-full sm:max-w-md bg-[#FAF7F0] border border-[#D4C7B5] rounded-t-3xl sm:rounded-2xl shadow-2xl p-6 pb-safe sm:p-8 max-h-[90dvh] overflow-y-auto"
       >
         <button
           onClick={onClose}
@@ -81,11 +82,11 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
           <div className="w-12 h-12 rounded-2xl bg-[#68795A]/15 text-[#68795A] flex items-center justify-center mx-auto mb-3">
             <Download size={24} />
           </div>
-          <h2 className="font-serif-vintage text-2xl sm:text-3xl font-medium text-[#2C241E]">
-            Exportar el Álbum Completo
+          <h2 className="font-display text-xl sm:text-3xl font-semibold text-[#2C241E]">
+            Descargar mis recuerdos
           </h2>
-          <p className="font-ui text-xs text-[#68795A] mt-1">
-            {photos.length} recuerdos capturados con película vintage
+          <p className="font-ui text-xs text-[#68795A] mt-1 tabular-nums">
+            {photos.length} {photos.length === 1 ? 'foto revelada' : 'fotos reveladas'} con película vintage
           </p>
         </div>
 
@@ -93,15 +94,15 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
         <div className="space-y-3 mb-6">
           <button
             onClick={handleDownloadAllPolaroids}
-            disabled={downloading}
+            disabled={downloading || photos.length === 0}
             className="w-full text-left p-4 rounded-xl border border-[#D4C7B5] bg-[#FBF9F4] hover:border-[#68795A] hover:bg-[#F4EFE6] transition-all flex items-start gap-3.5 group cursor-pointer disabled:opacity-60"
           >
             <div className="p-2.5 bg-[#68795A] text-[#FAF7F0] rounded-lg mt-0.5 shadow-sm">
               <FileArchive size={18} />
             </div>
             <div className="flex-1">
-              <div className="font-serif-vintage font-bold text-base text-[#2C241E]">
-                Descargar todas las Polaroid
+              <div className="font-display font-semibold text-base text-[#2C241E]">
+                Descargar mis polaroids
               </div>
               <p className="font-ui text-xs text-[#2C241E]/60 mt-0.5">
                 Cada foto revelada con marco analógico, lino y tipografía
@@ -117,8 +118,8 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
               <Printer size={18} />
             </div>
             <div className="flex-1">
-              <div className="font-serif-vintage font-bold text-base text-[#2C241E]">
-                Imprimir Diario de Recuerdos
+              <div className="font-display font-semibold text-base text-[#2C241E]">
+                Imprimir hoja de contactos
               </div>
               <p className="font-ui text-xs text-[#2C241E]/60 mt-0.5">
                 Hoja de contactos imprimible en alta definición

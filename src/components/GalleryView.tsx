@@ -1,19 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { EventPhoto, PhotoStyleId } from '../types';
+import { EventPhoto } from '../types';
 import { PolaroidCard } from './PolaroidCard';
-import { X, Search, Filter, Play, Layers, Grid as GridIcon, Sparkles } from 'lucide-react';
+import { X, Search, Play, Camera, Lock, ArrowRight } from 'lucide-react';
 import { PHOTO_STYLES } from '../utils/filmProcessing';
 import { WatermarkFond } from './WatermarkFond';
 
 interface GalleryViewProps {
-  photos: EventPhoto[];
+  photos: EventPhoto[]; // the current guest's photos only
   onClose: () => void;
   onLikePhoto: (id: string) => void;
   onSelectPhoto: (photo: EventPhoto) => void;
   onOpenDownloadModal: () => void;
-  onOpenPeopleModal: () => void;
-  initialFilterAuthor?: string;
+  onOpenReveal: () => void;
+  onOpenCamera: () => void;
 }
 
 export const GalleryView: React.FC<GalleryViewProps> = ({
@@ -22,160 +22,135 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
   onLikePhoto,
   onSelectPhoto,
   onOpenDownloadModal,
-  onOpenPeopleModal,
-  initialFilterAuthor = 'all',
+  onOpenReveal,
+  onOpenCamera,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStyle, setSelectedStyle] = useState<string>('all');
-  const [selectedAuthor, setSelectedAuthor] = useState<string>(initialFilterAuthor);
   const [isSlideshow, setIsSlideshow] = useState(false);
   const [slideshowIndex, setSlideshowIndex] = useState(0);
 
-  // Extract unique authors
-  const authors = useMemo(() => {
-    const list = Array.from(new Set(photos.map((p) => p.author)));
-    return list;
-  }, [photos]);
-
-  // Filtered photos
   const filteredPhotos = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return photos.filter((p) => {
       const matchSearch =
-        !searchQuery ||
-        p.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.caption && p.caption.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (p.tag && p.tag.toLowerCase().includes(searchQuery.toLowerCase()));
-
+        !q ||
+        (p.caption && p.caption.toLowerCase().includes(q)) ||
+        (p.tag && p.tag.toLowerCase().includes(q)) ||
+        (p.location && p.location.toLowerCase().includes(q));
       const matchStyle = selectedStyle === 'all' || p.style === selectedStyle;
-      const matchAuthor = selectedAuthor === 'all' || p.author === selectedAuthor;
-
-      return matchSearch && matchStyle && matchAuthor;
+      return matchSearch && matchStyle;
     });
-  }, [photos, searchQuery, selectedStyle, selectedAuthor]);
+  }, [photos, searchQuery, selectedStyle]);
 
-  // Slideshow auto advance
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isSlideshow || filteredPhotos.length === 0) return;
-    const interval = setInterval(() => {
-      setSlideshowIndex((prev) => (prev + 1) % filteredPhotos.length);
-    }, 3800);
+    const interval = setInterval(() => setSlideshowIndex((prev) => (prev + 1) % filteredPhotos.length), 3800);
     return () => clearInterval(interval);
   }, [isSlideshow, filteredPhotos.length]);
 
+  useEffect(() => {
+    if (slideshowIndex >= filteredPhotos.length) setSlideshowIndex(0);
+  }, [filteredPhotos.length, slideshowIndex]);
+
   return (
     <div className="fixed inset-0 z-40 bg-[#F8F5EE] overflow-y-auto flex flex-col">
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 bg-[#FAF7F0]/90 backdrop-blur-md border-b border-[#D4C7B5] px-4 sm:px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      {/* Header */}
+      <header className="sticky top-0 z-30 bg-[#FAF7F0]/95 backdrop-blur-md border-b border-[#D4C7B5] pt-safe px-3 sm:px-8 pb-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 min-w-0">
           <button
             onClick={onClose}
-            className="p-2 text-[#2C241E] hover:bg-[#2C241E]/5 rounded-full transition-colors cursor-pointer"
-            title="Volver al diario"
+            aria-label="Volver"
+            className="p-2 text-[#2C241E] hover:bg-[#2C241E]/5 rounded-full transition-colors cursor-pointer shrink-0"
           >
             <X size={22} />
           </button>
-          <div>
-            <h1 className="font-serif-vintage text-2xl sm:text-3xl text-[#2C241E] font-medium leading-none">
-              Mosaico de Recuerdos
-            </h1>
-            <p className="font-ui text-xs text-[#68795A] mt-1">
-              {filteredPhotos.length} momentos mostrados
+          <div className="min-w-0">
+            <h1 className="font-display text-xl sm:text-3xl text-[#2C241E] font-semibold leading-none truncate">Mis recuerdos</h1>
+            <p className="font-ui text-xs text-[#68795A] mt-1 tabular-nums">
+              {filteredPhotos.length} de {photos.length} fotos
             </p>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={() => setIsSlideshow(!isSlideshow)}
-            className={`px-3 py-1.5 rounded-full text-xs font-ui flex items-center gap-1.5 transition-all cursor-pointer ${
-              isSlideshow
-                ? 'bg-[#68795A] text-[#FAF7F0] font-bold'
-                : 'bg-[#FAF7F0] border border-[#D4C7B5] text-[#2C241E] hover:bg-[#F4EFE6]'
-            }`}
-          >
-            <Play size={13} />
-            <span className="hidden sm:inline">Diaporama</span>
-          </button>
-
-          <button
-            onClick={onOpenDownloadModal}
-            className="px-3 py-1.5 bg-[#2C241E] text-[#FAF7F0] hover:bg-[#3D2B24] rounded-full text-xs font-ui transition-all cursor-pointer"
-          >
-            Descargar Todo
-          </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {photos.length > 1 && (
+            <button
+              onClick={() => setIsSlideshow(!isSlideshow)}
+              aria-label="Pase de fotos"
+              className={`h-9 px-3 rounded-full font-ui text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                isSlideshow
+                  ? 'bg-[#68795A] text-[#FAF7F0]'
+                  : 'bg-[#FAF7F0] border border-[#D4C7B5] text-[#2C241E] hover:bg-[#F4EFE6]'
+              }`}
+            >
+              <Play size={13} />
+              <span className="hidden sm:inline">Pase</span>
+            </button>
+          )}
+          {photos.length > 0 && (
+            <button
+              onClick={onOpenDownloadModal}
+              className="h-9 px-3 bg-[#2C241E] text-[#FAF7F0] hover:bg-[#3D2B24] rounded-full font-ui text-xs transition-all cursor-pointer"
+            >
+              Descargar
+            </button>
+          )}
         </div>
       </header>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-[#FAF7F0] border-b border-[#D4C7B5]/60 px-4 sm:px-8 py-3.5">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2C241E]/40"
-            />
+      {/* Filters */}
+      {photos.length > 0 && (
+        <div className="bg-[#FAF7F0] border-b border-[#D4C7B5]/60 px-3 sm:px-8 py-3 flex flex-col gap-2.5">
+          <div className="relative w-full max-w-md">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2C241E]/40" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por invitado, lugar, nota..."
-              className="w-full pl-9 pr-4 py-2 bg-[#FBF9F4] border border-[#D4C7B5] rounded-xl text-xs font-ui text-[#2C241E] focus:outline-none focus:ring-1 focus:ring-[#68795A]"
+              placeholder="Buscar por dedicatoria o lugar"
+              className="w-full h-10 pl-9 pr-4 bg-[#FBF9F4] border border-[#D4C7B5] rounded-xl font-ui text-sm text-[#2C241E] focus:outline-none focus:ring-1 focus:ring-[#68795A]"
             />
           </div>
-
-          {/* Style & Author Filters */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-            {/* Style Pills */}
-            <div className="flex items-center gap-1.5 bg-[#F4EFE6] p-1 rounded-xl border border-[#D4C7B5]/40 text-xs font-ui">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0">
+            {[{ id: 'all', badge: 'Todos' }, ...PHOTO_STYLES].map((st) => (
               <button
-                onClick={() => setSelectedStyle('all')}
-                className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                  selectedStyle === 'all'
+                key={st.id}
+                onClick={() => setSelectedStyle(st.id)}
+                className={`shrink-0 h-8 px-3 rounded-full font-ui text-xs transition-colors cursor-pointer ${
+                  selectedStyle === st.id
                     ? 'bg-[#2C241E] text-[#FAF7F0]'
-                    : 'text-[#2C241E]/70 hover:text-[#2C241E]'
+                    : 'bg-[#F4EFE6] border border-[#D4C7B5]/60 text-[#2C241E]/70 hover:text-[#2C241E]'
                 }`}
               >
-                Todos los Estilos
+                {st.badge.charAt(0) + st.badge.slice(1).toLowerCase()}
               </button>
-              {PHOTO_STYLES.map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => setSelectedStyle(st.id)}
-                  className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                    selectedStyle === st.id
-                      ? 'bg-[#2C241E] text-[#FAF7F0]'
-                      : 'text-[#2C241E]/70 hover:text-[#2C241E]'
-                  }`}
-                >
-                  {st.badge}
-                </button>
-              ))}
-            </div>
-
-            {/* Author Dropdown */}
-            <select
-              value={selectedAuthor}
-              onChange={(e) => setSelectedAuthor(e.target.value)}
-              className="bg-[#F4EFE6] border border-[#D4C7B5]/60 text-[#2C241E] text-xs font-ui rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
-            >
-              <option value="all">Todos los Invitados</option>
-              {authors.map((auth) => (
-                <option key={auth} value={auth}>
-                  {auth}
-                </option>
-              ))}
-            </select>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8">
-        {isSlideshow && filteredPhotos.length > 0 ? (
-          /* Fullscreen Slideshow Mode */
-          <div className="max-w-2xl mx-auto py-4 flex flex-col items-center">
+      {/* Content */}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6">
+        {photos.length === 0 ? (
+          <div className="max-w-xs mx-auto text-center py-10 flex flex-col items-center gap-4">
+            <div className="polaroid-frame relative w-36 p-[6%] pb-[7%] rotate-[2deg]">
+              <div className="aspect-square bg-[#E4DCCE] polaroid-photo flex items-center justify-center">
+                <Camera size={26} className="text-[#2C241E]/25" />
+              </div>
+            </div>
+            <p className="font-ui text-sm text-[#2C241E]/70 leading-relaxed">
+              Todavía no has tomado ninguna foto. Aquí verás las que captures durante el evento.
+            </p>
+            <button
+              onClick={onOpenCamera}
+              className="font-display font-semibold text-sm bg-[#2C241E] text-[#FAF7F0] px-5 py-2.5 rounded-full shadow-md active:scale-95 transition-all cursor-pointer"
+            >
+              Capturar un momento
+            </button>
+          </div>
+        ) : isSlideshow && filteredPhotos.length > 0 ? (
+          <div className="max-w-[360px] mx-auto py-2 flex flex-col items-center">
             <motion.div
               key={filteredPhotos[slideshowIndex].id}
               initial={{ opacity: 0, scale: 0.96 }}
@@ -183,63 +158,51 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               transition={{ duration: 0.6 }}
               className="w-full"
             >
-              <PolaroidCard
-                photo={filteredPhotos[slideshowIndex]}
-                onLike={onLikePhoto}
-                onOpenDetail={onSelectPhoto}
-              />
+              <PolaroidCard photo={filteredPhotos[slideshowIndex]} onLike={onLikePhoto} onOpenDetail={onSelectPhoto} />
             </motion.div>
-            <div className="flex items-center gap-2 mt-4 text-xs font-ui text-[#68795A]">
-              <span>
-                {slideshowIndex + 1} de {filteredPhotos.length}
-              </span>
-              <span>• Pase de diapositivas analógico</span>
-            </div>
+            <span className="mt-4 font-ui text-xs text-[#68795A] tabular-nums">
+              {slideshowIndex + 1} de {filteredPhotos.length}
+            </span>
+          </div>
+        ) : filteredPhotos.length === 0 ? (
+          <div className="text-center py-12 flex flex-col items-center gap-3">
+            <p className="font-display text-lg text-[#2C241E]/60">Ninguna foto coincide con la búsqueda.</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedStyle('all');
+              }}
+              className="px-4 py-2 bg-[#FAF7F0] border border-[#D4C7B5] rounded-xl font-ui text-xs text-[#2C241E] hover:bg-[#F4EFE6] cursor-pointer"
+            >
+              Quitar filtros
+            </button>
           </div>
         ) : (
-          /* Grid View */
-          <>
-            {filteredPhotos.length === 0 ? (
-              <div className="text-center py-16">
-                <p className="font-serif-vintage text-2xl text-[#2C241E]/60 italic">
-                  Ningún recuerdo coincide con esta búsqueda.
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSelectedStyle('all');
-                    setSelectedAuthor('all');
-                  }}
-                  className="mt-4 px-4 py-2 bg-[#FAF7F0] border border-[#D4C7B5] rounded-xl text-xs font-ui text-[#2C241E] hover:bg-[#F4EFE6] cursor-pointer"
-                >
-                  Restablecer filtros
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredPhotos.map((photo, idx) => (
-                  <PolaroidCard
-                    key={photo.id}
-                    photo={photo}
-                    index={idx}
-                    onLike={onLikePhoto}
-                    onOpenDetail={onSelectPhoto}
-                  />
-                ))}
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+            {filteredPhotos.map((photo, idx) => (
+              <PolaroidCard key={photo.id} photo={photo} index={idx} onLike={onLikePhoto} onOpenDetail={onSelectPhoto} />
+            ))}
+          </div>
         )}
+
+        {/* Link to the shared album */}
+        <button
+          onClick={onOpenReveal}
+          className="mt-8 w-full max-w-md mx-auto text-left bg-[#FAF7F0]/80 border border-dashed border-[#D4C7B5] rounded-2xl p-4 flex items-center gap-4 hover:bg-[#FAF7F0] active:scale-[0.99] transition-all cursor-pointer"
+        >
+          <span className="shrink-0 w-11 h-11 rounded-xl bg-[#2C241E]/5 text-[#68795A] flex items-center justify-center">
+            <Lock size={18} />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block font-display font-semibold text-sm text-[#2C241E]">Todos los recuerdos del evento</span>
+            <span className="block font-ui text-xs text-[#2C241E]/60 mt-0.5">Se revelarán cuando termine el evento.</span>
+          </span>
+          <ArrowRight size={18} className="shrink-0 text-[#2C241E]/50" />
+        </button>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#FAF7F0] border-t border-[#D4C7B5]/60 py-6 px-4 text-center">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-xs font-ui text-[#2C241E]/50">
-            JARDÍN DE RECUERDOS • COLECCIÓN ANALÓGICA
-          </span>
-          <WatermarkFond size="md" variant="dark" />
-        </div>
+      <footer className="bg-[#FAF7F0] border-t border-[#D4C7B5]/60 py-5 pb-safe px-4 text-center">
+        <WatermarkFond size="md" variant="dark" />
       </footer>
     </div>
   );

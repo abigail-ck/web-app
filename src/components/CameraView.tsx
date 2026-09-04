@@ -200,7 +200,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       </AnimatePresence>
 
       {/* Top Bar */}
-      <header className="relative z-20 px-4 py-3 sm:py-4 flex items-center justify-between bg-gradient-to-b from-[#1A1614]/90 to-transparent">
+      <header className="relative z-20 px-3 sm:px-4 pt-safe pb-2 flex items-center justify-between gap-2 bg-gradient-to-b from-[#1A1614]/90 to-transparent">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -211,7 +211,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         {/* Center Event Header & Countdown */}
         <div className="text-center">
-          <div className="font-ui text-xs sm:text-sm text-[#FAF7F0] tracking-wide font-medium truncate max-w-[200px] sm:max-w-xs">
+          <div className="font-ui text-xs sm:text-sm text-[#FAF7F0] tracking-wide font-medium truncate max-w-[46vw] sm:max-w-xs">
             {eventConfig.title}
           </div>
           <div className="font-ui text-[11px] text-[#C48B9F] flex items-center justify-center gap-1.5 font-bold">
@@ -221,15 +221,18 @@ export const CameraView: React.FC<CameraViewProps> = ({
         </div>
 
         {/* User Badge */}
-        <div className="font-ui text-xs text-[#FAF7F0]/70 bg-[#FAF7F0]/10 px-2.5 py-1 rounded-full border border-[#FAF7F0]/15">
+        <div className="font-ui text-xs text-[#FAF7F0]/70 bg-[#FAF7F0]/10 px-2.5 py-1 rounded-full border border-[#FAF7F0]/15 max-w-[26vw] truncate">
           {currentUser}
         </div>
       </header>
 
       {/* Main Viewfinder Section */}
-      <main className="relative flex-1 mx-3 sm:mx-6 my-1 flex items-center justify-center overflow-hidden">
-        {/* Viewfinder Frame with Torn Paper Edge & Heavy Film Grain */}
-        <div className="relative w-full max-w-md aspect-[3/4] sm:aspect-[4/5] rounded-xl overflow-hidden bg-[#2C241E] shadow-[0_10px_30px_rgba(0,0,0,0.6)] border-2 border-[#D4C7B5]/40 flex items-center justify-center">
+      <main className="relative flex-1 min-h-0 mx-3 sm:mx-6 my-1 flex items-center justify-center overflow-hidden">
+        {/* Viewfinder: as wide as the phone allows, never taller than the space left by header and controls */}
+        <div
+          style={{ width: 'min(100%, 448px, calc((100dvh - 250px) * 0.75))' }}
+          className="relative aspect-[3/4] rounded-xl overflow-hidden bg-[#2C241E] shadow-[0_10px_30px_rgba(0,0,0,0.6)] border-2 border-[#D4C7B5]/40 flex items-center justify-center"
+        >
           {/* Live Video Stream */}
           <video
             ref={videoRef}
@@ -277,7 +280,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           {cameraError && (
             <div className="absolute inset-0 bg-[#2C241E]/95 p-6 flex flex-col items-center justify-center text-center z-30">
               <AlertCircle size={32} className="text-[#C48B9F] mb-3" />
-              <p className="font-serif-vintage text-lg text-[#FAF7F0] mb-4">
+              <p className="font-display text-lg text-[#FAF7F0] mb-4">
                 {cameraError}
               </p>
               <button
@@ -302,7 +305,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       </main>
 
       {/* Camera Controls Bar */}
-      <footer className="relative z-20 px-6 py-4 sm:py-6 bg-gradient-to-t from-[#1A1614] via-[#1A1614]/90 to-transparent flex flex-col items-center gap-4">
+      <footer className="relative z-20 px-6 pt-3 pb-safe sm:py-6 bg-gradient-to-t from-[#1A1614] via-[#1A1614]/90 to-transparent flex flex-col items-center gap-3 sm:gap-4">
         {/* Top Controls: Zoom & Flash */}
         <div className="flex items-center justify-center gap-6">
           {/* Flash Toggle */}
@@ -364,7 +367,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           <button
             onClick={handleCapture}
             disabled={isShutterPressed}
-            className="w-20 h-20 sm:w-22 sm:h-22 rounded-full shutter-metal-button flex items-center justify-center cursor-pointer transition-all duration-150 relative active:scale-95 group"
+            className="w-[76px] h-[76px] sm:w-22 sm:h-22 rounded-full shutter-metal-button flex items-center justify-center cursor-pointer transition-all duration-150 relative active:scale-95 group"
             title="Tomar foto"
           >
             <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full border border-[#FAF7F0]/60 flex items-center justify-center">

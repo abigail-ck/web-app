@@ -30,14 +30,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
   const letters = Array.from((eventConfig.heroWord || '').trim().toUpperCase());
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-between items-center overflow-hidden bg-paper-beige paper-grain text-[#2C241E] select-none">
+    <div className="relative min-h-dvh w-full flex flex-col justify-between items-center overflow-hidden bg-paper-beige paper-grain text-[#2C241E] select-none">
       {/* Top bar: origin stamp */}
       <header className="relative z-10 pt-8 sm:pt-10 w-full max-w-lg px-6 flex items-center justify-between">
         <motion.span
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-serif-vintage text-xs sm:text-sm tracking-[0.3em] text-[#5C473A]"
+          className="font-display text-xs sm:text-sm tracking-[0.3em] text-[#5C473A]"
         >
           {eventConfig.dateOrigin}
         </motion.span>
@@ -60,7 +60,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           {/* Scattered letters, alternating left / right like a typeset poem */}
           <div
             aria-hidden="true"
-            className="absolute inset-[10%_14%] z-20 flex flex-col justify-between pointer-events-none font-serif-vintage text-xl sm:text-2xl tracking-[0.08em] text-[#FFFAF4]/95 [text-shadow:0_0_6px_rgba(120,60,60,0.25)]"
+            className="absolute inset-[10%_14%] z-20 flex flex-col justify-between pointer-events-none font-display text-xl sm:text-2xl tracking-[0.08em] text-[#FFFAF4]/95 [text-shadow:0_0_6px_rgba(120,60,60,0.25)]"
           >
             {letters.map((ch, i) => (
               <span
@@ -82,7 +82,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
           className="flex flex-col items-center gap-3"
         >
           <FloralTwoFlowersSvg size={54} color="#5C473A" className="opacity-80" />
-          <h1 className="font-serif-vintage text-3xl sm:text-4xl font-medium leading-tight text-[#3F2E24] max-w-[20ch] [text-wrap:balance]">
+          <h1 className="font-display text-3xl sm:text-4xl font-medium leading-tight text-[#3F2E24] max-w-[20ch] [text-wrap:balance]">
             {eventConfig.welcomeTitle}
           </h1>
           <p className="font-ui text-xs sm:text-sm text-[#5C473A]/80 max-w-sm leading-relaxed">

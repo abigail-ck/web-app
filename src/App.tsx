@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { ActiveScreen, Contributor, EventConfig, EventPhoto, PhotoStyleId } from './types';
 import { INITIAL_CONTRIBUTORS, INITIAL_EVENT_CONFIG, INITIAL_PHOTOS } from './data/initialPhotos';
@@ -10,22 +10,19 @@ import { GalleryView } from './components/GalleryView';
 import { PeopleModal } from './components/PeopleModal';
 import { DownloadAlbumModal } from './components/DownloadAlbumModal';
 import { PhotoDetailModal } from './components/PhotoDetailModal';
+import { RevealScreen } from './components/RevealScreen';
 import { createPolaroidExport } from './utils/filmProcessing';
 
+const GUEST_FALLBACK = 'Invitado Especial';
+
 export default function App() {
-  // State: Screen Navigation
-  const [screen, setScreen] = useState<ActiveScreen>(() => {
-    const savedUser = localStorage.getItem('jardin_user');
-    return savedUser ? 'dashboard' : 'splash';
-  });
+  const [screen, setScreen] = useState<ActiveScreen>(() =>
+    localStorage.getItem('jardin_user') ? 'dashboard' : 'splash'
+  );
+  const [userName, setUserName] = useState<string>(() => localStorage.getItem('jardin_user') || '');
+  const [eventConfig] = useState<EventConfig>(INITIAL_EVENT_CONFIG);
 
-  const [userName, setUserName] = useState<string>(() => {
-    return localStorage.getItem('jardin_user') || '';
-  });
-
-  const [eventConfig, setEventConfig] = useState<EventConfig>(INITIAL_EVENT_CONFIG);
-
-  // Photos State
+  // All photos of the event (own + others). Others stay hidden until the album is revealed.
   const [photos, setPhotos] = useState<EventPhoto[]>(() => {
     const saved = localStorage.getItem('jardin_photos');
     if (saved) {
@@ -38,7 +35,6 @@ export default function App() {
     return INITIAL_PHOTOS;
   });
 
-  // Contributors State
   const [contributors, setContributors] = useState<Contributor[]>(() => {
     const saved = localStorage.getItem('jardin_contributors');
     if (saved) {
@@ -51,87 +47,76 @@ export default function App() {
     return INITIAL_CONTRIBUTORS;
   });
 
-  // Camera Capture Temporary Buffers
   const [capturedRaw, setCapturedRaw] = useState<string>('');
   const [capturedProcessed, setCapturedProcessed] = useState<string>('');
 
-  // Modals & Popups
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [isPeopleModalOpen, setIsPeopleModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isRevealOpen, setIsRevealOpen] = useState(false);
   const [selectedPhotoForDetail, setSelectedPhotoForDetail] = useState<EventPhoto | null>(null);
-  const [filterAuthorForGallery, setFilterAuthorForGallery] = useState<string>('all');
 
-  // Sync to localStorage
+  const currentUser = userName || GUEST_FALLBACK;
+
+  // Only the guest's own photos are visible for now
+  const myPhotos = useMemo(
+    () => photos.filter((p) => p.author.toLowerCase() === currentUser.toLowerCase()),
+    [photos, currentUser]
+  );
+  const totalMoments = eventConfig.totalMoments + (photos.length - INITIAL_PHOTOS.length);
+
   useEffect(() => {
-    if (userName) {
-      localStorage.setItem('jardin_user', userName);
-    }
+    if (userName) localStorage.setItem('jardin_user', userName);
   }, [userName]);
 
   useEffect(() => {
-    localStorage.setItem('jardin_photos', JSON.stringify(photos));
+    try {
+      localStorage.setItem('jardin_photos', JSON.stringify(photos));
+    } catch (err) {
+      console.warn('No se pudieron guardar las fotos en este dispositivo (almacenamiento lleno).', err);
+    }
   }, [photos]);
 
   useEffect(() => {
     localStorage.setItem('jardin_contributors', JSON.stringify(contributors));
   }, [contributors]);
 
-  // Handle User Entering Splash Screen
   const handleEnterFromSplash = (name: string) => {
     setUserName(name);
-    // Add user to contributors list if not already present
     setContributors((prev) => {
-      const exists = prev.some((c) => c.name.toLowerCase() === name.toLowerCase());
-      if (!exists) {
-        const initials = name
-          .split('.')
+      if (prev.some((c) => c.name.toLowerCase() === name.toLowerCase())) return prev;
+      const initials =
+        name
+          .split(/[.\s]+/)
+          .filter(Boolean)
           .map((n) => n[0])
           .join('')
           .toUpperCase()
           .slice(0, 2) || 'IN';
-        return [
-          {
-            id: String(Date.now()),
-            name,
-            initials,
-            avatarColor: '#B36D72',
-            photoCount: 0,
-            role: 'Invitado',
-            lastActive: 'ahora mismo',
-          },
-          ...prev,
-        ];
-      }
-      return prev;
+      return [
+        { id: String(Date.now()), name, initials, avatarColor: '#B36D72', photoCount: 0, role: 'Invitado', lastActive: 'ahora' },
+        ...prev,
+      ];
     });
     setScreen('dashboard');
   };
 
-  // Handle Photo Captured in Camera
   const handlePhotoCaptured = (processedDataUrl: string, rawDataUrl: string) => {
     setCapturedProcessed(processedDataUrl);
     setCapturedRaw(rawDataUrl);
     setScreen('style-selector');
   };
 
-  // Handle Style Selection Confirmed
-  const handleStyleConfirmed = (
-    finalPhotoUrl: string,
-    selectedStyle: PhotoStyleId,
-    caption?: string
-  ) => {
+  const handleStyleConfirmed = (finalPhotoUrl: string, selectedStyle: PhotoStyleId, caption?: string) => {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const timeFormatted = `${hours}:${minutes}`;
+    const timeFormatted = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     const newPhoto: EventPhoto = {
       id: `photo_${Date.now()}`,
       url: finalPhotoUrl,
       originalUrl: capturedRaw,
-      author: userName || 'Invitado Especial',
-      caption: caption,
+      author: currentUser,
+      caption,
       timestamp: now.toISOString(),
       formattedTime: timeFormatted,
       style: selectedStyle,
@@ -139,23 +124,16 @@ export default function App() {
       hasLiked: true,
       tag: 'Instantánea',
       rotationDeg: (Math.random() - 0.5) * 4.5,
-      location: 'Jardín de Recuerdos',
+      location: eventConfig.subtitle.split('•')[0].trim(),
     };
 
-    // Prepend new photo to journal
     setPhotos((prev) => [newPhoto, ...prev]);
-
-    // Update contributor count
     setContributors((prev) =>
-      prev.map((c) => {
-        if (c.name.toLowerCase() === (userName || 'Invitado Especial').toLowerCase()) {
-          return { ...c, photoCount: c.photoCount + 1, lastActive: 'ahora mismo' };
-        }
-        return c;
-      })
+      prev.map((c) =>
+        c.name.toLowerCase() === currentUser.toLowerCase() ? { ...c, photoCount: c.photoCount + 1, lastActive: 'ahora' } : c
+      )
     );
 
-    // Trigger subtle gold & rose confetti burst
     confetti({
       particleCount: 40,
       spread: 60,
@@ -167,32 +145,24 @@ export default function App() {
     setScreen('dashboard');
   };
 
-  // Handle Like Photo
   const handleLikePhoto = (photoId: string) => {
     setPhotos((prev) =>
       prev.map((photo) => {
-        if (photo.id === photoId) {
-          const hasLiked = !photo.hasLiked;
-          return {
-            ...photo,
-            likes: hasLiked ? photo.likes + 1 : Math.max(0, photo.likes - 1),
-            hasLiked,
-          };
-        }
-        return photo;
+        if (photo.id !== photoId) return photo;
+        const hasLiked = !photo.hasLiked;
+        return { ...photo, likes: hasLiked ? photo.likes + 1 : Math.max(0, photo.likes - 1), hasLiked };
       })
+    );
+    setSelectedPhotoForDetail((sel) =>
+      sel && sel.id === photoId
+        ? { ...sel, hasLiked: !sel.hasLiked, likes: !sel.hasLiked ? sel.likes + 1 : Math.max(0, sel.likes - 1) }
+        : sel
     );
   };
 
-  // Handle Single Polaroid Download
   const handleDownloadSinglePhoto = async (photo: EventPhoto) => {
     try {
-      const polaroidUrl = await createPolaroidExport(
-        photo.url,
-        photo.author,
-        photo.caption,
-        eventConfig.dateOrigin
-      );
+      const polaroidUrl = await createPolaroidExport(photo.url, photo.author, photo.caption, eventConfig.dateOrigin);
       const link = document.createElement('a');
       link.href = polaroidUrl;
       link.download = `Jardin_Recuerdos_${photo.author}_${photo.id}.jpg`;
@@ -204,53 +174,33 @@ export default function App() {
     }
   };
 
-  // Next / Prev in Detail Modal
-  const handleNextPhoto = () => {
-    if (!selectedPhotoForDetail) return;
-    const currentIndex = photos.findIndex((p) => p.id === selectedPhotoForDetail.id);
-    if (currentIndex >= 0 && currentIndex < photos.length - 1) {
-      setSelectedPhotoForDetail(photos[currentIndex + 1]);
-    } else {
-      setSelectedPhotoForDetail(photos[0]);
-    }
-  };
-
-  const handlePrevPhoto = () => {
-    if (!selectedPhotoForDetail) return;
-    const currentIndex = photos.findIndex((p) => p.id === selectedPhotoForDetail.id);
-    if (currentIndex > 0) {
-      setSelectedPhotoForDetail(photos[currentIndex - 1]);
-    } else {
-      setSelectedPhotoForDetail(photos[photos.length - 1]);
-    }
+  // Detail navigation moves within the guest's own photos
+  const stepDetail = (dir: 1 | -1) => {
+    if (!selectedPhotoForDetail || myPhotos.length === 0) return;
+    const i = myPhotos.findIndex((p) => p.id === selectedPhotoForDetail.id);
+    const next = (i + dir + myPhotos.length) % myPhotos.length;
+    setSelectedPhotoForDetail(myPhotos[next]);
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F5EE] text-[#2C241E] font-serif-vintage">
-      {/* Screen Routing */}
+    <div className="min-h-dvh bg-[#F8F5EE] text-[#2C241E] font-display">
       {screen === 'splash' && (
-        <SplashScreen
-          eventConfig={eventConfig}
-          onEnter={handleEnterFromSplash}
-          initialUserName={userName}
-        />
+        <SplashScreen eventConfig={eventConfig} onEnter={handleEnterFromSplash} initialUserName={userName} />
       )}
 
       {screen === 'dashboard' && (
         <EventDashboard
           eventConfig={eventConfig}
-          photos={photos}
-          contributors={contributors}
-          currentUser={userName || 'Invitado Especial'}
+          myPhotos={myPhotos}
+          totalMoments={totalMoments}
+          currentUser={currentUser}
           onOpenLiveCamera={() => setScreen('camera')}
-          onOpenGallery={() => {
-            setFilterAuthorForGallery('all');
-            setIsGalleryOpen(true);
-          }}
+          onOpenGallery={() => setIsGalleryOpen(true)}
           onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
           onOpenPeopleModal={() => setIsPeopleModalOpen(true)}
+          onOpenReveal={() => setIsRevealOpen(true)}
           onLikePhoto={handleLikePhoto}
-          onSelectPhoto={(photo) => setSelectedPhotoForDetail(photo)}
+          onSelectPhoto={setSelectedPhotoForDetail}
           onDownloadSinglePhoto={handleDownloadSinglePhoto}
         />
       )}
@@ -258,7 +208,7 @@ export default function App() {
       {screen === 'camera' && (
         <CameraView
           eventConfig={eventConfig}
-          currentUser={userName || 'Invitado Especial'}
+          currentUser={currentUser}
           onClose={() => setScreen('dashboard')}
           onPhotoCaptured={handlePhotoCaptured}
         />
@@ -268,62 +218,57 @@ export default function App() {
         <PhotoStyleSelector
           initialProcessedUrl={capturedProcessed}
           rawImageUrl={capturedRaw}
-          currentUser={userName || 'Invitado Especial'}
+          currentUser={currentUser}
           onBack={() => setScreen('camera')}
           onConfirm={handleStyleConfirmed}
         />
       )}
 
-      {/* Global Gallery Modal */}
       {isGalleryOpen && (
         <GalleryView
-          photos={photos}
-          initialFilterAuthor={filterAuthorForGallery}
+          photos={myPhotos}
           onClose={() => setIsGalleryOpen(false)}
           onLikePhoto={handleLikePhoto}
-          onSelectPhoto={(photo) => {
-            setSelectedPhotoForDetail(photo);
-          }}
-          onOpenDownloadModal={() => {
+          onSelectPhoto={setSelectedPhotoForDetail}
+          onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
+          onOpenReveal={() => setIsRevealOpen(true)}
+          onOpenCamera={() => {
             setIsGalleryOpen(false);
-            setIsDownloadModalOpen(true);
-          }}
-          onOpenPeopleModal={() => {
-            setIsGalleryOpen(false);
-            setIsPeopleModalOpen(true);
+            setScreen('camera');
           }}
         />
       )}
 
-      {/* People / Guests Modal */}
       <PeopleModal
         isOpen={isPeopleModalOpen}
         onClose={() => setIsPeopleModalOpen(false)}
         contributors={contributors}
-        currentUser={userName || 'Invitado Especial'}
-        onSelectContributor={(authorName) => {
-          setFilterAuthorForGallery(authorName);
-          setIsGalleryOpen(true);
-        }}
+        currentUser={currentUser}
+        totalPeople={eventConfig.totalPeople}
       />
 
-      {/* Download Album Modal */}
       <DownloadAlbumModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
-        photos={photos}
+        photos={myPhotos}
         eventConfig={eventConfig}
       />
 
-      {/* Photo Detail Modal */}
+      <RevealScreen
+        isOpen={isRevealOpen}
+        eventConfig={eventConfig}
+        totalMoments={totalMoments}
+        onClose={() => setIsRevealOpen(false)}
+      />
+
       <PhotoDetailModal
         photo={selectedPhotoForDetail}
         onClose={() => setSelectedPhotoForDetail(null)}
         onLike={handleLikePhoto}
-        onNext={handleNextPhoto}
-        onPrev={handlePrevPhoto}
-        hasNext={photos.length > 1}
-        hasPrev={photos.length > 1}
+        onNext={() => stepDetail(1)}
+        onPrev={() => stepDetail(-1)}
+        hasNext={myPhotos.length > 1}
+        hasPrev={myPhotos.length > 1}
       />
     </div>
   );

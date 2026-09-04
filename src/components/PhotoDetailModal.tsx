@@ -79,11 +79,11 @@ export const PhotoDetailModal: React.FC<PhotoDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-3 sm:p-6 bg-[#2B211B]">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center px-4 pt-safe pb-safe bg-[#2B211B]">
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Top bar */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 font-ui text-xs text-[#FBF7F0]/60">
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 pt-safe pb-2 font-ui text-xs text-[#FBF7F0]/60">
         <span>
           {dateLabel} · {photo.formattedTime}
         </span>
@@ -119,7 +119,8 @@ export const PhotoDetailModal: React.FC<PhotoDetailModalProps> = ({
       <motion.div
         initial={{ opacity: 0, scale: 0.92, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative z-10 w-full max-w-[340px] sm:max-w-[380px] flip-scene"
+        style={{ width: 'min(100%, 380px, calc((100dvh - 300px) / 1.2))' }}
+        className="relative z-10 flip-scene"
       >
         <div
           role="button"

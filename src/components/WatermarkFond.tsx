@@ -25,7 +25,7 @@ export const WatermarkFond: React.FC<WatermarkFondProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 font-serif-vintage lowercase select-none transition-colors duration-300 font-bold ${sizeClasses[size]} ${colorClasses[variant]} ${className}`}
+      className={`inline-flex items-center gap-1.5 font-logo italic lowercase select-none transition-colors duration-300 font-bold ${sizeClasses[size]} ${colorClasses[variant]} ${className}`}
       style={{
         textShadow: variant === 'light' ? '0 1px 2px rgba(0,0,0,0.4)' : '0 1px 1px rgba(255,255,255,0.6)',
       }}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Contributor } from '../types';
-import { X, Users, Camera, Sparkles, Award } from 'lucide-react';
+import { X } from 'lucide-react';
 import { WatermarkFond } from './WatermarkFond';
 
 interface PeopleModalProps {
@@ -9,117 +9,65 @@ interface PeopleModalProps {
   onClose: () => void;
   contributors: Contributor[];
   currentUser: string;
-  onSelectContributor?: (contributorName: string) => void;
+  totalPeople: number;
 }
 
-export const PeopleModal: React.FC<PeopleModalProps> = ({
-  isOpen,
-  onClose,
-  contributors,
-  currentUser,
-  onSelectContributor,
-}) => {
+/** Simple guest list: names only. Bottom sheet on phones, centered card on larger screens. */
+export const PeopleModal: React.FC<PeopleModalProps> = ({ isOpen, onClose, contributors, currentUser, totalPeople }) => {
   if (!isOpen) return null;
 
+  const sorted = [...contributors].sort((a, b) => {
+    const aMe = a.name.toLowerCase() === currentUser.toLowerCase();
+    const bMe = b.name.toLowerCase() === currentUser.toLowerCase();
+    if (aMe !== bMe) return aMe ? -1 : 1;
+    return a.name.localeCompare(b.name, 'es');
+  });
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2C241E]/60 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-[#2C241E]/60 backdrop-blur-sm">
+      <div className="absolute inset-0" onClick={onClose} />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-lg bg-[#FAF7F0] border border-[#D4C7B5] rounded-2xl shadow-2xl p-6 sm:p-8 max-h-[85vh] flex flex-col justify-between overflow-hidden"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative w-full sm:max-w-md bg-[#FAF7F0] border border-[#D4C7B5] rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[85dvh] flex flex-col"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#D4C7B5]/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#68795A]/10 text-[#68795A] rounded-xl">
-              <Users size={22} />
-            </div>
-            <div>
-              <h2 className="font-serif-vintage text-2xl sm:text-3xl text-[#2C241E] font-medium leading-none">
-                Fotógrafos del Diario
-              </h2>
-              <p className="font-ui text-xs text-[#68795A] mt-1">
-                203 invitados compartiendo sus recuerdos
-              </p>
-            </div>
+        <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-[#D4C7B5]/60">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-[#2C241E] leading-none">Invitados</h2>
+            <p className="font-ui text-xs text-[#68795A] mt-1.5 tabular-nums">{totalPeople} personas en el evento</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-[#2C241E]/50 hover:text-[#2C241E] hover:bg-[#2C241E]/5 rounded-full transition-colors cursor-pointer"
+            aria-label="Cerrar"
+            className="p-2 -mr-2 text-[#2C241E]/60 hover:text-[#2C241E] hover:bg-[#2C241E]/5 rounded-full transition-colors cursor-pointer"
           >
             <X size={20} />
           </button>
         </div>
 
-        {/* Current Active User Highlight */}
-        <div className="my-4 p-3.5 bg-[#C48B9F]/10 border border-[#C48B9F]/30 rounded-xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#C48B9F] text-white flex items-center justify-center font-ui font-bold text-sm shadow-sm">
-              {currentUser.slice(0, 2).toUpperCase()}
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-serif-vintage font-semibold text-base text-[#2C241E]">
-                  {currentUser}
-                </span>
-                <span className="text-[10px] font-ui bg-[#C48B9F] text-white px-1.5 py-0.2 rounded-full uppercase">
-                  Tú
-                </span>
-              </div>
-              <p className="text-xs text-[#2C241E]/60 font-ui">
-                Conectado para capturar el evento
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Contributor List */}
-        <div className="overflow-y-auto pr-1 divide-y divide-[#D4C7B5]/40 flex-1 my-2">
-          {contributors.map((person) => (
-            <div
-              key={person.id}
-              onClick={() => {
-                onSelectContributor?.(person.name);
-                onClose();
-              }}
-              className="py-3 px-2 flex items-center justify-between hover:bg-[#2C241E]/5 rounded-xl transition-colors cursor-pointer group"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-10 h-10 rounded-full text-white flex items-center justify-center font-ui font-medium text-sm shadow-sm transition-transform group-hover:scale-105"
+        <ul className="overflow-y-auto px-5 divide-y divide-[#D4C7B5]/40 flex-1">
+          {sorted.map((person) => {
+            const isMe = person.name.toLowerCase() === currentUser.toLowerCase();
+            return (
+              <li key={person.id} className="py-3 flex items-center gap-3">
+                <span
+                  className="shrink-0 w-9 h-9 rounded-full text-white flex items-center justify-center font-ui text-xs"
                   style={{ backgroundColor: person.avatarColor }}
                 >
                   {person.initials}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-ui font-semibold text-sm text-[#2C241E]">
-                      {person.name}
-                    </span>
-                    {person.role && (
-                      <span className="text-[10px] font-ui text-[#68795A] bg-[#68795A]/10 px-1.5 py-0.5 rounded">
-                        {person.role}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[11px] font-ui text-[#2C241E]/50">
-                    Activo hace {person.lastActive}
+                </span>
+                <span className="font-ui text-sm text-[#2C241E] truncate">{person.name}</span>
+                {isMe && (
+                  <span className="ml-auto font-ui text-[10px] uppercase tracking-wider bg-[#C48B9F] text-white px-2 py-0.5 rounded-full">
+                    tú
                   </span>
-                </div>
-              </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
 
-              <div className="flex items-center gap-1.5 text-xs font-ui text-[#2C241E]/70 bg-[#FAF7F0] border border-[#D4C7B5]/60 px-2.5 py-1 rounded-full group-hover:border-[#68795A]">
-                <Camera size={13} className="text-[#68795A]" />
-                <span>{person.photoCount} fotos</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div className="pt-4 border-t border-[#D4C7B5]/60 flex items-center justify-between text-xs text-[#2C241E]/60 font-ui">
-          <span>ES.1983 • Diario Colectivo</span>
+        <div className="px-5 py-4 pb-safe border-t border-[#D4C7B5]/60 flex justify-center">
           <WatermarkFond size="sm" variant="dark" />
         </div>
       </motion.div>

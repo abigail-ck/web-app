@@ -276,13 +276,13 @@ export async function createPolaroidExport(
       // Caption
       if (caption) {
         ctx.fillStyle = '#3D2B24';
-        ctx.font = 'italic 34px "Cormorant Garamond", Georgia, serif';
+        ctx.font = '34px "Patrick Hand", "Segoe Print", cursive';
         ctx.fillText(`"${caption}"`, margin + 10, photoHeight + margin + 160);
       }
 
       // Watermark "fond"
       ctx.fillStyle = 'rgba(44, 36, 30, 0.4)';
-      ctx.font = '700 36px "Cormorant Garamond", serif';
+      ctx.font = 'italic 600 36px "Cormorant Garamond", serif';
       ctx.textAlign = 'right';
       ctx.fillText('fond', pWidth - margin - 15, pHeight - margin - 20);
 

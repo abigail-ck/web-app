@@ -59,17 +59,17 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
   return (
     <div className="fixed inset-0 z-50 bg-[#1F1916] text-[#FAF7F0] flex flex-col justify-between overflow-y-auto select-none">
       {/* Top Navigation */}
-      <header className="px-4 sm:px-8 py-4 flex items-center justify-between border-b border-[#FAF7F0]/10 bg-[#1F1916]/90 backdrop-blur-md sticky top-0 z-30">
+      <header className="px-3 sm:px-8 pt-safe pb-3 flex items-center justify-between gap-2 border-b border-[#FAF7F0]/10 bg-[#1F1916]/90 backdrop-blur-md sticky top-0 z-30">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-xs font-ui text-[#FAF7F0]/80 hover:text-[#FAF7F0] p-1.5 rounded-lg hover:bg-[#FAF7F0]/10 transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
-          <span>Volver a tomar</span>
+          <span className="hidden sm:inline">Volver a tomar</span>
         </button>
 
-        <h1 className="font-serif-vintage text-xl sm:text-2xl text-[#FAF7F0] font-medium tracking-wide">
-          Elige el estilo de película
+        <h1 className="font-display text-base sm:text-2xl text-[#FAF7F0] font-semibold truncate">
+          Elige el estilo
         </h1>
 
         <div className="w-16 flex justify-end">
@@ -78,7 +78,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
       </header>
 
       {/* Main Center Area: Stacked Polaroid Preview with Hold To Compare */}
-      <main className="flex-1 max-w-lg w-full mx-auto px-4 py-4 sm:py-6 flex flex-col items-center justify-center">
+      <main className="flex-1 min-h-0 max-w-lg w-full mx-auto px-4 py-3 sm:py-6 flex flex-col items-center justify-center">
         {/* Hold to Compare Hint */}
         {/* Polaroid Stacked Frame */}
         <div
@@ -86,7 +86,8 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
           onMouseUp={() => setIsComparing(false)}
           onTouchStart={() => setIsComparing(true)}
           onTouchEnd={() => setIsComparing(false)}
-          className="relative w-full max-w-[340px] sm:max-w-[380px] polaroid-frame p-[6%] pb-[7%] cursor-pointer transition-transform duration-200 active:scale-[0.99]"
+          style={{ width: 'min(100%, 380px, calc((100dvh - 330px) / 1.22))' }}
+          className="relative polaroid-frame p-[6%] pb-[7%] cursor-pointer transition-transform duration-200 active:scale-[0.99]"
         >
           {/* Active Comparison Badge */}
           {isComparing && (
@@ -141,27 +142,27 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
         </div>
 
         {/* Selected Style Info Card */}
-        <div className="mt-4 text-center max-w-sm px-2">
-          <h2 className="font-serif-vintage text-xl text-[#FAF7F0] font-semibold">
+        <div className="mt-3 text-center max-w-sm px-2">
+          <h2 className="font-display text-lg sm:text-xl text-[#FAF7F0] font-semibold">
             {styleConfig.name}
           </h2>
-          <p className="font-ui text-xs text-[#FAF7F0]/70 mt-1 leading-relaxed">
+          <p className="font-ui text-xs text-[#FAF7F0]/70 mt-1 leading-relaxed line-clamp-2">
             {styleConfig.description}
           </p>
         </div>
       </main>
 
       {/* Style Swatches & Confirm Pill Button */}
-      <footer className="px-4 sm:px-8 py-5 bg-[#171311] border-t border-[#FAF7F0]/10 flex flex-col items-center gap-4">
-        {/* Swatches Horizontal Carousel */}
-        <div className="w-full max-w-lg flex items-center justify-center gap-2.5 sm:gap-3 overflow-x-auto pb-1">
+      <footer className="px-4 sm:px-8 pt-4 pb-safe bg-[#171311] border-t border-[#FAF7F0]/10 flex flex-col items-center gap-3 sm:gap-4">
+        {/* Swatches: scroll on narrow screens, centered when they fit */}
+        <div className="w-full max-w-lg flex items-center justify-start sm:justify-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
           {PHOTO_STYLES.map((style) => {
             const isSelected = selectedStyle === style.id;
             return (
               <button
                 key={style.id}
                 onClick={() => handleStyleChange(style.id)}
-                className={`relative flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all cursor-pointer min-w-[70px] ${
+                className={`relative shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all cursor-pointer min-w-[70px] ${
                   isSelected
                     ? 'bg-[#FAF7F0]/20 border-2 border-[#FAF7F0] scale-105'
                     : 'bg-[#FAF7F0]/5 border border-[#FAF7F0]/10 hover:bg-[#FAF7F0]/10 opacity-70 hover:opacity-100'
@@ -187,7 +188,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
                 </div>
 
                 <span className="font-ui text-[10px] text-[#FAF7F0] whitespace-nowrap">
-                  {style.name.split(' ')[0]}
+                  {style.badge.charAt(0) + style.badge.slice(1).toLowerCase()}
                 </span>
               </button>
             );
@@ -198,7 +199,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
         <div className="w-full max-w-xs">
           <button
             onClick={handleConfirm}
-            className="w-full bg-[#FAF7F0] text-[#1A1614] hover:bg-[#F4EFE6] active:scale-95 font-serif-vintage font-bold text-lg py-3.5 px-6 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+            className="w-full bg-[#FAF7F0] text-[#1A1614] hover:bg-[#F4EFE6] active:scale-95 font-display font-semibold text-base sm:text-lg py-3.5 px-6 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer group"
           >
             <Sparkles size={18} className="text-[#C5A059]" />
             <span>Guardar en el Diario</span>

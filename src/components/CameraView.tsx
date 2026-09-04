@@ -22,7 +22,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const initIdRef = useRef(0);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const [flashMode, setFlashMode] = useState<'off' | 'on'>('off');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -31,66 +32,79 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isLoadingCamera, setIsLoadingCamera] = useState(true);
 
-  // Initialize Camera Stream
-  const initCamera = useCallback(async (facing: 'user' | 'environment') => {
-    setIsLoadingCamera(true);
-    setCameraError(null);
-
-    // Stop existing stream tracks
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+  const stopStream = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     }
+    if (videoRef.current) videoRef.current.srcObject = null;
+  }, []);
 
-    try {
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: facing,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-        },
-        audio: false,
-      };
+  // Start the camera. Guarded against overlapping starts (React StrictMode
+  // mounts twice in development; flipping the camera restarts it too).
+  const initCamera = useCallback(
+    async (facing: 'user' | 'environment') => {
+      const myId = ++initIdRef.current;
+      setIsLoadingCamera(true);
+      setCameraError(null);
+      stopStream();
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-      setStream(mediaStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError('Este navegador no permite usar la cámara. Puedes subir una foto desde tu galería.');
+        setIsLoadingCamera(false);
+        return;
       }
-      setIsLoadingCamera(false);
-    } catch (err: unknown) {
-      console.warn('Camera access error:', err);
-      // If environment camera failed, try user camera
-      if (facing === 'environment') {
+
+      const attempts: MediaStreamConstraints[] = [
+        { video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1440 } }, audio: false },
+        { video: true, audio: false },
+      ];
+
+      let lastError: unknown = null;
+      for (const constraints of attempts) {
         try {
-          const fallbackStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-          setStream(fallbackStream);
-          if (videoRef.current) {
-            videoRef.current.srcObject = fallbackStream;
-            await videoRef.current.play();
+          const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+          if (myId !== initIdRef.current) {
+            // A newer start superseded this one: release what we got.
+            mediaStream.getTracks().forEach((t) => t.stop());
+            return;
+          }
+          streamRef.current = mediaStream;
+          const video = videoRef.current;
+          if (video) {
+            video.srcObject = mediaStream;
+            // play() can reject with AbortError when a newer load interrupts it; that is not a camera failure.
+            await video.play().catch(() => {});
           }
           setIsLoadingCamera(false);
           return;
-        } catch {
-          // Both failed
+        } catch (err) {
+          lastError = err;
         }
       }
-      setCameraError('Cámara no disponible. Puedes subir una foto desde tu galería.');
+
+      if (myId !== initIdRef.current) return;
+      const name = (lastError as { name?: string } | null)?.name;
+      console.warn('Camera access error:', lastError);
+      setCameraError(
+        name === 'NotAllowedError'
+          ? 'No se pudo usar la cámara: el navegador no dio permiso. Actívalo en el candado de la barra de direcciones o sube una foto desde tu galería.'
+          : name === 'NotFoundError'
+            ? 'No se encontró ninguna cámara en este dispositivo. Puedes subir una foto desde tu galería.'
+            : 'La cámara no está disponible ahora mismo. Puedes subir una foto desde tu galería.'
+      );
       setIsLoadingCamera(false);
-    }
-  }, []);
+    },
+    [stopStream]
+  );
 
   useEffect(() => {
     initCamera(facingMode);
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
+      initIdRef.current += 1; // cancel any start still in flight
+      stopStream();
     };
-  }, [facingMode]);
+  }, [facingMode, initCamera, stopStream]);
 
   // Flip Camera
   const toggleFacingMode = () => {
@@ -139,9 +153,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       );
 
       // Stop stream before moving to style selector
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
+      stopStream();
 
       setTimeout(() => {
         onPhotoCaptured(processedUrl, rawDataUrl);
@@ -174,11 +186,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       const rawDataUrl = event.target?.result as string;
       const img = await loadImage(rawDataUrl);
       const processedUrl = await processImageWithStyle(img, 'vintage');
-
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-
+      stopStream();
       onPhotoCaptured(processedUrl, rawDataUrl);
     };
     reader.readAsDataURL(file);

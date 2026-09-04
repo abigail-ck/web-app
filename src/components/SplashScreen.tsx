@@ -98,22 +98,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ eventConfig, onEnter
                 <ArrowRight size={20} />
               </button>
             </div>
-            <div className="mt-2.5 flex items-center gap-2 flex-wrap font-ui text-[11px] text-[#5C473A]/75">
-              <span>Sugerencias:</span>
-              {['Emma.D', 'Daniel.M', 'Brian.S', 'Yen.K'].map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => {
-                    setUserName(name);
-                    onEnter(name);
-                  }}
-                  className="underline underline-offset-2 hover:text-[#3F2E24] cursor-pointer"
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
           </form>
 
           <div className="flex justify-center">

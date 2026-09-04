@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-mono: 'Courier Prime', 'Space Mono', monospace;
+    --font-script: 'Italianno', cursive;
+    --color-bg-linen: #F7F3EB;
+    --color-paper: #FBF9F4;
+    --color-rose: #C48B9F;
+    --color-olive: #68795A;
+    --color-espresso: #2C241E;
+    --color-gold: #C5A059;
+  }
+
+  body {
+    font-family: var(--font-serif);
+    background-color: var(--color-bg-linen);
+    color: var(--color-espresso);
+    overflow-x: hidden;
+  }
+}
+
+.font-serif-vintage {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+}
+
+.font-display-chic {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-typewriter {
+  font-family: 'Courier Prime', 'Space Mono', monospace;
+}
+
+.font-script-hand {
+  font-family: 'Italianno', cursive;
+}
+
+/* Vintage Paper & Linen Texture */
+.bg-linen-pattern {
+  background-color: #F8F5EE;
+  background-image: radial-gradient(#2C241E0a 1px, transparent 1px), radial-gradient(#68795A08 1px, #F8F5EE 1px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+.bg-paper-grain {
+  background-color: #FBF9F4;
+  box-shadow: inset 0 0 40px rgba(197, 160, 89, 0.05);
+}
+
+/* Film Grain Overlay */
+.film-grain {
+  position: relative;
+}
+.film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  z-index: 10;
+}
+
+/* Heavy Film Grain for Viewfinder & Vintage Filter */
+.heavy-film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.14'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  z-index: 10;
+}
+
+/* Vintage Warm Film Filter CSS */
+.filter-vintage-film {
+  filter: contrast(1.08) saturate(1.15) sepia(0.22) brightness(0.98) hue-rotate(-5deg);
+}
+
+.filter-bw-silver {
+  filter: grayscale(1) contrast(1.22) brightness(0.95);
+}
+
+.filter-old-rose {
+  filter: contrast(1.05) saturate(1.1) sepia(0.35) hue-rotate(315deg) brightness(0.98);
+}
+
+.filter-olive-herb {
+  filter: contrast(1.1) saturate(0.9) sepia(0.25) hue-rotate(45deg) brightness(0.96);
+}
+
+/* Polaroid Shadow & Deck Stack */
+.polaroid-frame {
+  background: #FDFBF7;
+  box-shadow: 0 10px 25px -5px rgba(44, 36, 30, 0.15), 0 4px 6px -2px rgba(44, 36, 30, 0.05), inset 0 0 0 1px rgba(212, 163, 115, 0.2);
+  border-radius: 4px;
+}
+
+.polaroid-stacked-shadow {
+  box-shadow: 0 15px 35px -5px rgba(44, 36, 30, 0.2), 0 6px 10px -3px rgba(44, 36, 30, 0.1), inset 0 0 0 1px rgba(212, 163, 115, 0.25);
+}
+
+/* Torn Edge Effect */
+.torn-edge {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 98%, 98% 99%, 95% 97.5%, 92% 99.2%, 
+    89% 98%, 86% 99.5%, 83% 97.8%, 80% 99%, 76% 98.2%, 73% 99.4%,
+    70% 97.9%, 66% 99.1%, 63% 98%, 60% 99.5%, 56% 98.2%, 53% 99%,
+    50% 97.8%, 46% 99.3%, 43% 98.1%, 40% 99.4%, 36% 98%, 33% 99.2%,
+    30% 97.9%, 26% 99.1%, 23% 98.3%, 20% 99.5%, 16% 97.8%, 13% 99%,
+    10% 98.2%, 6% 99.4%, 3% 98%, 0% 99%
+  );
+}
+
+/* Rustic Shutter Button */
+.shutter-metal-button {
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #E6DFD5 40%, #B8AEA0 85%, #8C8072 100%);
+  box-shadow: 
+    0 8px 20px rgba(44, 36, 30, 0.3),
+    0 2px 4px rgba(44, 36, 30, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.shutter-metal-button:active {
+  transform: scale(0.94);
+  box-shadow: 
+    0 2px 8px rgba(44, 36, 30, 0.25),
+    inset 0 3px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4EFE6;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4C7B5;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B3A490;
+}
+

@@ -97,8 +97,8 @@ export default function App() {
             initials,
             avatarColor: '#B36D72',
             photoCount: 0,
-            role: 'Invité',
-            lastActive: 'À l’instant',
+            role: 'Invitado',
+            lastActive: 'ahora mismo',
           },
           ...prev,
         ];
@@ -130,16 +130,16 @@ export default function App() {
       id: `photo_${Date.now()}`,
       url: finalPhotoUrl,
       originalUrl: capturedRaw,
-      author: userName || 'Invité Spécial',
+      author: userName || 'Invitado Especial',
       caption: caption,
       timestamp: now.toISOString(),
       formattedTime: timeFormatted,
       style: selectedStyle,
       likes: 1,
       hasLiked: true,
-      tag: 'Instantané',
+      tag: 'Instantánea',
       rotationDeg: (Math.random() - 0.5) * 4.5,
-      location: 'Jardin des Souvenirs',
+      location: 'Jardín de Recuerdos',
     };
 
     // Prepend new photo to journal
@@ -148,8 +148,8 @@ export default function App() {
     // Update contributor count
     setContributors((prev) =>
       prev.map((c) => {
-        if (c.name.toLowerCase() === (userName || 'Invité Spécial').toLowerCase()) {
-          return { ...c, photoCount: c.photoCount + 1, lastActive: 'À l’instant' };
+        if (c.name.toLowerCase() === (userName || 'Invitado Especial').toLowerCase()) {
+          return { ...c, photoCount: c.photoCount + 1, lastActive: 'ahora mismo' };
         }
         return c;
       })
@@ -241,7 +241,7 @@ export default function App() {
           eventConfig={eventConfig}
           photos={photos}
           contributors={contributors}
-          currentUser={userName || 'Invité Spécial'}
+          currentUser={userName || 'Invitado Especial'}
           onOpenLiveCamera={() => setScreen('camera')}
           onOpenGallery={() => {
             setFilterAuthorForGallery('all');
@@ -258,7 +258,7 @@ export default function App() {
       {screen === 'camera' && (
         <CameraView
           eventConfig={eventConfig}
-          currentUser={userName || 'Invité Spécial'}
+          currentUser={userName || 'Invitado Especial'}
           onClose={() => setScreen('dashboard')}
           onPhotoCaptured={handlePhotoCaptured}
         />
@@ -268,7 +268,7 @@ export default function App() {
         <PhotoStyleSelector
           initialProcessedUrl={capturedProcessed}
           rawImageUrl={capturedRaw}
-          currentUser={userName || 'Invité Spécial'}
+          currentUser={userName || 'Invitado Especial'}
           onBack={() => setScreen('camera')}
           onConfirm={handleStyleConfirmed}
         />
@@ -300,7 +300,7 @@ export default function App() {
         isOpen={isPeopleModalOpen}
         onClose={() => setIsPeopleModalOpen(false)}
         contributors={contributors}
-        currentUser={userName || 'Invité Spécial'}
+        currentUser={userName || 'Invitado Especial'}
         onSelectContributor={(authorName) => {
           setFilterAuthorForGallery(authorName);
           setIsGalleryOpen(true);

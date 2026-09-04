@@ -4,7 +4,8 @@
   :root {
     --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
     --font-display: 'Playfair Display', Georgia, serif;
-    --font-mono: 'Courier Prime', 'Space Mono', monospace;
+    --font-ui: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+    --font-hand: 'Caveat', 'Segoe Script', cursive;
     --font-script: 'Italianno', cursive;
     --color-bg-linen: #F7F3EB;
     --color-paper: #FBF9F4;
@@ -30,8 +31,16 @@
   font-family: 'Playfair Display', Georgia, serif;
 }
 
-.font-typewriter {
-  font-family: 'Courier Prime', 'Space Mono', monospace;
+/* Small non-title text: Manrope */
+.font-ui {
+  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Handwritten dedication on the back of a polaroid */
+.font-hand {
+  font-family: 'Caveat', 'Segoe Script', cursive;
 }
 
 .font-script-hand {
@@ -93,27 +102,75 @@
   filter: contrast(1.1) saturate(0.9) sepia(0.25) hue-rotate(45deg) brightness(0.96);
 }
 
-/* Polaroid Shadow & Deck Stack */
+/* Classic instant-film frame: white card, square photo, wide bottom band */
 .polaroid-frame {
-  background: #FDFBF7;
-  box-shadow: 0 10px 25px -5px rgba(44, 36, 30, 0.15), 0 4px 6px -2px rgba(44, 36, 30, 0.05), inset 0 0 0 1px rgba(212, 163, 115, 0.2);
-  border-radius: 4px;
+  background: linear-gradient(180deg, #FDFBF6 0%, #F8F4EC 100%);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 1px rgba(44, 36, 30, 0.12),
+    0 6px 14px rgba(44, 36, 30, 0.16),
+    0 18px 40px rgba(44, 36, 30, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+.polaroid-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 2px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 40%, rgba(44, 36, 30, 0.04) 100%);
+}
+.polaroid-photo {
+  box-shadow: inset 0 0 0 1px rgba(44, 36, 30, 0.18), inset 0 2px 6px rgba(44, 36, 30, 0.25);
 }
 
-.polaroid-stacked-shadow {
-  box-shadow: 0 15px 35px -5px rgba(44, 36, 30, 0.2), 0 6px 10px -3px rgba(44, 36, 30, 0.1), inset 0 0 0 1px rgba(212, 163, 115, 0.25);
+/* Back of the polaroid (dedication) */
+.polaroid-back {
+  background: linear-gradient(180deg, #E9E3D8 0%, #DDD6C9 100%);
+}
+.polaroid-back-lines {
+  background: repeating-linear-gradient(0deg, transparent 0 27px, rgba(63, 46, 36, 0.12) 27px 28px);
 }
 
-/* Torn Edge Effect */
-.torn-edge {
-  clip-path: polygon(
-    0% 0%, 100% 0%, 100% 98%, 98% 99%, 95% 97.5%, 92% 99.2%, 
-    89% 98%, 86% 99.5%, 83% 97.8%, 80% 99%, 76% 98.2%, 73% 99.4%,
-    70% 97.9%, 66% 99.1%, 63% 98%, 60% 99.5%, 56% 98.2%, 53% 99%,
-    50% 97.8%, 46% 99.3%, 43% 98.1%, 40% 99.4%, 36% 98%, 33% 99.2%,
-    30% 97.9%, 26% 99.1%, 23% 98.3%, 20% 99.5%, 16% 97.8%, 13% 99%,
-    10% 98.2%, 6% 99.4%, 3% 98%, 0% 99%
-  );
+/* Flip card (detail view) */
+.flip-scene {
+  perspective: 1400px;
+}
+.flip-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flip-face-back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .flip-card { transition: none; }
+}
+
+/* Paper background for the splash screen */
+.bg-paper-beige {
+  background-color: #E6DFD3;
+  background-image: radial-gradient(ellipse at 50% 30%, #EDE7DC 0%, #E4DCCE 55%, #D9D0C1 100%);
+}
+.paper-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
 }
 
 /* Rustic Shutter Button */

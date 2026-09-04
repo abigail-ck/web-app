@@ -39,7 +39,7 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({
               <h2 className="font-serif-vintage text-2xl sm:text-3xl text-[#2C241E] font-medium leading-none">
                 Fotógrafos del Diario
               </h2>
-              <p className="font-typewriter text-xs text-[#68795A] mt-1">
+              <p className="font-ui text-xs text-[#68795A] mt-1">
                 203 invitados compartiendo sus recuerdos
               </p>
             </div>
@@ -55,7 +55,7 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({
         {/* Current Active User Highlight */}
         <div className="my-4 p-3.5 bg-[#C48B9F]/10 border border-[#C48B9F]/30 rounded-xl flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#C48B9F] text-white flex items-center justify-center font-typewriter font-bold text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-[#C48B9F] text-white flex items-center justify-center font-ui font-bold text-sm shadow-sm">
               {currentUser.slice(0, 2).toUpperCase()}
             </div>
             <div>
@@ -63,11 +63,11 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({
                 <span className="font-serif-vintage font-semibold text-base text-[#2C241E]">
                   {currentUser}
                 </span>
-                <span className="text-[10px] font-typewriter bg-[#C48B9F] text-white px-1.5 py-0.2 rounded-full uppercase">
+                <span className="text-[10px] font-ui bg-[#C48B9F] text-white px-1.5 py-0.2 rounded-full uppercase">
                   Tú
                 </span>
               </div>
-              <p className="text-xs text-[#2C241E]/60 font-typewriter">
+              <p className="text-xs text-[#2C241E]/60 font-ui">
                 Conectado para capturar el evento
               </p>
             </div>
@@ -87,29 +87,29 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-10 h-10 rounded-full text-white flex items-center justify-center font-typewriter font-medium text-sm shadow-sm transition-transform group-hover:scale-105"
+                  className="w-10 h-10 rounded-full text-white flex items-center justify-center font-ui font-medium text-sm shadow-sm transition-transform group-hover:scale-105"
                   style={{ backgroundColor: person.avatarColor }}
                 >
                   {person.initials}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-typewriter font-semibold text-sm text-[#2C241E]">
+                    <span className="font-ui font-semibold text-sm text-[#2C241E]">
                       {person.name}
                     </span>
                     {person.role && (
-                      <span className="text-[10px] font-typewriter text-[#68795A] bg-[#68795A]/10 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-ui text-[#68795A] bg-[#68795A]/10 px-1.5 py-0.5 rounded">
                         {person.role}
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] font-typewriter text-[#2C241E]/50">
+                  <span className="text-[11px] font-ui text-[#2C241E]/50">
                     Activo hace {person.lastActive}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs font-typewriter text-[#2C241E]/70 bg-[#FAF7F0] border border-[#D4C7B5]/60 px-2.5 py-1 rounded-full group-hover:border-[#68795A]">
+              <div className="flex items-center gap-1.5 text-xs font-ui text-[#2C241E]/70 bg-[#FAF7F0] border border-[#D4C7B5]/60 px-2.5 py-1 rounded-full group-hover:border-[#68795A]">
                 <Camera size={13} className="text-[#68795A]" />
                 <span>{person.photoCount} fotos</span>
               </div>
@@ -118,7 +118,7 @@ export const PeopleModal: React.FC<PeopleModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-[#D4C7B5]/60 flex items-center justify-between text-xs text-[#2C241E]/60 font-typewriter">
+        <div className="pt-4 border-t border-[#D4C7B5]/60 flex items-center justify-between text-xs text-[#2C241E]/60 font-ui">
           <span>ES.1983 • Diario Colectivo</span>
           <WatermarkFond size="sm" variant="dark" />
         </div>

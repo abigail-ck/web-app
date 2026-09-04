@@ -48,6 +48,7 @@ export interface EventConfig {
   dateOrigin: string; // e.g. "FR.1983"
   welcomeTitle: string;
   welcomeSubtitle: string;
+  heroWord: string; // letters scattered over the splash photo
   timeLeftDisplay: string;
   timeLeftSeconds: number;
   totalMoments: number;

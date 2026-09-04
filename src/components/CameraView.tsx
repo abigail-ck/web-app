@@ -211,17 +211,17 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
         {/* Center Event Header & Countdown */}
         <div className="text-center">
-          <div className="font-typewriter text-xs sm:text-sm text-[#FAF7F0] tracking-wide font-medium truncate max-w-[200px] sm:max-w-xs">
+          <div className="font-ui text-xs sm:text-sm text-[#FAF7F0] tracking-wide font-medium truncate max-w-[200px] sm:max-w-xs">
             {eventConfig.title}
           </div>
-          <div className="font-typewriter text-[11px] text-[#C48B9F] flex items-center justify-center gap-1.5 font-bold">
+          <div className="font-ui text-[11px] text-[#C48B9F] flex items-center justify-center gap-1.5 font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C48B9F] animate-pulse" />
             <span>{eventConfig.timeLeftDisplay} restante</span>
           </div>
         </div>
 
         {/* User Badge */}
-        <div className="font-typewriter text-xs text-[#FAF7F0]/70 bg-[#FAF7F0]/10 px-2.5 py-1 rounded-full border border-[#FAF7F0]/15">
+        <div className="font-ui text-xs text-[#FAF7F0]/70 bg-[#FAF7F0]/10 px-2.5 py-1 rounded-full border border-[#FAF7F0]/15">
           {currentUser}
         </div>
       </header>
@@ -247,7 +247,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
           {/* Authentic Camera Viewfinder Reticle / Crosshairs */}
           <div className="absolute inset-4 pointer-events-none border border-[#FAF7F0]/20 rounded-lg flex flex-col justify-between p-3">
-            <div className="flex justify-between items-start text-[10px] font-typewriter text-[#FAF7F0]/60">
+            <div className="flex justify-between items-start text-[10px] font-ui text-[#FAF7F0]/60">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block" />
                 <span>REC • 35MM</span>
@@ -267,7 +267,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
 
             {/* Bottom Viewfinder Info */}
-            <div className="flex justify-between items-end text-[10px] font-typewriter text-[#FAF7F0]/60">
+            <div className="flex justify-between items-end text-[10px] font-ui text-[#FAF7F0]/60">
               <span>F/2.8 • 1/125s</span>
               <span>ISO 400</span>
             </div>
@@ -282,7 +282,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
               </p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-[#FAF7F0] text-[#2C241E] px-4 py-2.5 rounded-xl font-typewriter text-xs font-semibold flex items-center gap-2 shadow-md hover:bg-[#F4EFE6] cursor-pointer"
+                className="bg-[#FAF7F0] text-[#2C241E] px-4 py-2.5 rounded-xl font-ui text-xs font-semibold flex items-center gap-2 shadow-md hover:bg-[#F4EFE6] cursor-pointer"
               >
                 <Upload size={16} />
                 <span>Elegir desde la galería</span>
@@ -293,7 +293,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           {isLoadingCamera && !cameraError && (
             <div className="absolute inset-0 bg-[#2C241E]/80 flex flex-col items-center justify-center z-20">
               <div className="w-8 h-8 border-2 border-[#C48B9F] border-t-transparent rounded-full animate-spin mb-3" />
-              <p className="font-typewriter text-xs text-[#FAF7F0]/80">
+              <p className="font-ui text-xs text-[#FAF7F0]/80">
                 Inicializando el carrete...
               </p>
             </div>
@@ -328,7 +328,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
               <button
                 key={z.label}
                 onClick={() => setZoomLevel(z.value)}
-                className={`px-3 py-1 rounded-full text-xs font-typewriter transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-ui transition-all cursor-pointer ${
                   zoomLevel === z.value
                     ? 'bg-[#FAF7F0] text-[#1A1614] font-bold shadow-sm'
                     : 'text-[#FAF7F0]/70 hover:text-[#FAF7F0]'

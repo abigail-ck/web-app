@@ -265,12 +265,12 @@ export async function createPolaroidExport(
       // 3. Bottom Polaroid Information
       // Author & Event line
       ctx.fillStyle = '#2C241E';
-      ctx.font = '500 32px "Courier Prime", "Space Mono", monospace';
+      ctx.font = '500 32px "Manrope", Arial, sans-serif';
       ctx.fillText(author || 'Invitado Especial', margin + 10, photoHeight + margin + 65);
 
       // Date / Origin
       ctx.fillStyle = '#68795A';
-      ctx.font = '400 24px "Courier Prime", monospace';
+      ctx.font = '400 24px "Manrope", Arial, sans-serif';
       ctx.fillText(dateStr, margin + 10, photoHeight + margin + 105);
 
       // Caption

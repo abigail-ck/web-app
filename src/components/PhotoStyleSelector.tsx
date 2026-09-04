@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Check, Sparkles, SlidersHorizontal, Eye, MessageSquareQuote } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { PhotoStyleConfig, PhotoStyleId } from '../types';
 import { PHOTO_STYLES, getStyleConfig, processImageWithStyle } from '../utils/filmProcessing';
 import { soundEffects } from '../utils/audio';
@@ -62,7 +62,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
       <header className="px-4 sm:px-8 py-4 flex items-center justify-between border-b border-[#FAF7F0]/10 bg-[#1F1916]/90 backdrop-blur-md sticky top-0 z-30">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs font-typewriter text-[#FAF7F0]/80 hover:text-[#FAF7F0] p-1.5 rounded-lg hover:bg-[#FAF7F0]/10 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-ui text-[#FAF7F0]/80 hover:text-[#FAF7F0] p-1.5 rounded-lg hover:bg-[#FAF7F0]/10 transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
           <span>Volver a tomar</span>
@@ -80,28 +80,23 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
       {/* Main Center Area: Stacked Polaroid Preview with Hold To Compare */}
       <main className="flex-1 max-w-lg w-full mx-auto px-4 py-4 sm:py-6 flex flex-col items-center justify-center">
         {/* Hold to Compare Hint */}
-        <div className="mb-2.5 flex items-center gap-2 text-xs font-typewriter text-[#C48B9F]">
-          <Eye size={13} />
-          <span>Mantén pulsada la foto para comparar con la original</span>
-        </div>
-
         {/* Polaroid Stacked Frame */}
         <div
           onMouseDown={() => setIsComparing(true)}
           onMouseUp={() => setIsComparing(false)}
           onTouchStart={() => setIsComparing(true)}
           onTouchEnd={() => setIsComparing(false)}
-          className="relative w-full max-w-[340px] sm:max-w-[380px] bg-[#FAF7F0] p-3.5 sm:p-4 rounded-md polaroid-stacked-shadow border border-[#D4C7B5] cursor-pointer transition-transform duration-200 active:scale-[0.99]"
+          className="relative w-full max-w-[340px] sm:max-w-[380px] polaroid-frame p-[6%] pb-[7%] cursor-pointer transition-transform duration-200 active:scale-[0.99]"
         >
           {/* Active Comparison Badge */}
           {isComparing && (
-            <div className="absolute top-6 left-6 z-30 bg-[#2C241E]/90 text-white font-typewriter text-[11px] px-2.5 py-1 rounded shadow-md uppercase">
+            <div className="absolute top-6 left-6 z-30 bg-[#2C241E]/90 text-white font-ui text-[11px] px-2.5 py-1 rounded shadow-md uppercase">
               Original Sin Filtro
             </div>
           )}
 
           {/* Photo Display */}
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] bg-[#2C241E]">
+          <div className="relative aspect-square w-full overflow-hidden bg-[#CFC2AD] polaroid-photo">
             <img
               src={isComparing ? rawImageUrl : currentDisplayUrl}
               alt="Vista previa"
@@ -123,10 +118,10 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
           </div>
 
           {/* Bottom Polaroid Details */}
-          <div className="pt-3 pb-1 px-1 flex flex-col gap-1">
-            <div className="flex items-center justify-between text-xs font-typewriter text-[#2C241E]">
-              <span className="font-bold">{currentUser}</span>
-              <span className="text-[#68795A]">ES.1983 • Instantánea</span>
+          <div className="pt-[7%] flex flex-col gap-1">
+            <div className="flex items-center justify-between text-xs font-ui text-[#2C241E]">
+              <span>{currentUser}</span>
+              <span className="text-[#68795A]">Mantén pulsado para comparar</span>
             </div>
 
             {/* Caption Input / Preview */}
@@ -135,8 +130,11 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
                 type="text"
                 value={captionText}
                 onChange={(e) => setCaptionText(e.target.value)}
-                placeholder="Añadir una nota al diario (ej: Brindis bajo la pérgola)..."
-                className="w-full bg-[#F4EFE6]/60 text-[#2C241E] placeholder-[#2C241E]/40 font-serif-vintage italic text-sm px-2.5 py-1.5 rounded border border-[#D4C7B5]/60 focus:outline-none focus:ring-1 focus:ring-[#68795A]"
+                placeholder="Dedicatoria para el reverso (opcional)"
+                maxLength={140}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="w-full bg-transparent text-[#4A3A31] placeholder-[#2C241E]/35 font-hand text-lg px-1 py-1 border-b border-[#D4C7B5] focus:outline-none focus:border-[#68795A]"
               />
             </div>
           </div>
@@ -147,7 +145,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
           <h2 className="font-serif-vintage text-xl text-[#FAF7F0] font-semibold">
             {styleConfig.name}
           </h2>
-          <p className="font-typewriter text-xs text-[#FAF7F0]/70 mt-1 leading-relaxed">
+          <p className="font-ui text-xs text-[#FAF7F0]/70 mt-1 leading-relaxed">
             {styleConfig.description}
           </p>
         </div>
@@ -188,7 +186,7 @@ export const PhotoStyleSelector: React.FC<PhotoStyleSelectorProps> = ({
                   {isSelected && <Check size={14} className="text-white drop-shadow" />}
                 </div>
 
-                <span className="font-typewriter text-[10px] text-[#FAF7F0] whitespace-nowrap">
+                <span className="font-ui text-[10px] text-[#FAF7F0] whitespace-nowrap">
                   {style.name.split(' ')[0]}
                 </span>
               </button>

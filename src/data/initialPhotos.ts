@@ -6,6 +6,7 @@ export const INITIAL_EVENT_CONFIG: EventConfig = {
   dateOrigin: 'ES.1983',
   welcomeTitle: 'Bienvenidos al Jardín de Recuerdos',
   welcomeSubtitle: 'Cada rincón es una composición viva y entrañable, concebida para emocionar, conectar y perdurar.',
+  heroWord: 'JARDÍN',
   timeLeftDisplay: '1d 23h',
   timeLeftSeconds: 169380, // ~1d 23h
   totalMoments: 4293,

@@ -78,7 +78,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             <h1 className="font-serif-vintage text-2xl sm:text-3xl text-[#2C241E] font-medium leading-none">
               Mosaico de Recuerdos
             </h1>
-            <p className="font-typewriter text-xs text-[#68795A] mt-1">
+            <p className="font-ui text-xs text-[#68795A] mt-1">
               {filteredPhotos.length} momentos mostrados
             </p>
           </div>
@@ -88,7 +88,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => setIsSlideshow(!isSlideshow)}
-            className={`px-3 py-1.5 rounded-full text-xs font-typewriter flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-ui flex items-center gap-1.5 transition-all cursor-pointer ${
               isSlideshow
                 ? 'bg-[#68795A] text-[#FAF7F0] font-bold'
                 : 'bg-[#FAF7F0] border border-[#D4C7B5] text-[#2C241E] hover:bg-[#F4EFE6]'
@@ -100,7 +100,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
 
           <button
             onClick={onOpenDownloadModal}
-            className="px-3 py-1.5 bg-[#2C241E] text-[#FAF7F0] hover:bg-[#3D2B24] rounded-full text-xs font-typewriter transition-all cursor-pointer"
+            className="px-3 py-1.5 bg-[#2C241E] text-[#FAF7F0] hover:bg-[#3D2B24] rounded-full text-xs font-ui transition-all cursor-pointer"
           >
             Descargar Todo
           </button>
@@ -121,14 +121,14 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por invitado, lugar, nota..."
-              className="w-full pl-9 pr-4 py-2 bg-[#FBF9F4] border border-[#D4C7B5] rounded-xl text-xs font-typewriter text-[#2C241E] focus:outline-none focus:ring-1 focus:ring-[#68795A]"
+              className="w-full pl-9 pr-4 py-2 bg-[#FBF9F4] border border-[#D4C7B5] rounded-xl text-xs font-ui text-[#2C241E] focus:outline-none focus:ring-1 focus:ring-[#68795A]"
             />
           </div>
 
           {/* Style & Author Filters */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
             {/* Style Pills */}
-            <div className="flex items-center gap-1.5 bg-[#F4EFE6] p-1 rounded-xl border border-[#D4C7B5]/40 text-xs font-typewriter">
+            <div className="flex items-center gap-1.5 bg-[#F4EFE6] p-1 rounded-xl border border-[#D4C7B5]/40 text-xs font-ui">
               <button
                 onClick={() => setSelectedStyle('all')}
                 className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
@@ -158,7 +158,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
             <select
               value={selectedAuthor}
               onChange={(e) => setSelectedAuthor(e.target.value)}
-              className="bg-[#F4EFE6] border border-[#D4C7B5]/60 text-[#2C241E] text-xs font-typewriter rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
+              className="bg-[#F4EFE6] border border-[#D4C7B5]/60 text-[#2C241E] text-xs font-ui rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
             >
               <option value="all">Todos los Invitados</option>
               {authors.map((auth) => (
@@ -189,7 +189,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                 onOpenDetail={onSelectPhoto}
               />
             </motion.div>
-            <div className="flex items-center gap-2 mt-4 text-xs font-typewriter text-[#68795A]">
+            <div className="flex items-center gap-2 mt-4 text-xs font-ui text-[#68795A]">
               <span>
                 {slideshowIndex + 1} de {filteredPhotos.length}
               </span>
@@ -210,7 +210,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                     setSelectedStyle('all');
                     setSelectedAuthor('all');
                   }}
-                  className="mt-4 px-4 py-2 bg-[#FAF7F0] border border-[#D4C7B5] rounded-xl text-xs font-typewriter text-[#2C241E] hover:bg-[#F4EFE6] cursor-pointer"
+                  className="mt-4 px-4 py-2 bg-[#FAF7F0] border border-[#D4C7B5] rounded-xl text-xs font-ui text-[#2C241E] hover:bg-[#F4EFE6] cursor-pointer"
                 >
                   Restablecer filtros
                 </button>
@@ -235,7 +235,7 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
       {/* Footer */}
       <footer className="bg-[#FAF7F0] border-t border-[#D4C7B5]/60 py-6 px-4 text-center">
         <div className="flex flex-col items-center gap-2">
-          <span className="text-xs font-typewriter text-[#2C241E]/50">
+          <span className="text-xs font-ui text-[#2C241E]/50">
             JARDÍN DE RECUERDOS • COLECCIÓN ANALÓGICA
           </span>
           <WatermarkFond size="md" variant="dark" />

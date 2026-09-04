@@ -84,7 +84,7 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
           <h2 className="font-serif-vintage text-2xl sm:text-3xl font-medium text-[#2C241E]">
             Exportar el Álbum Completo
           </h2>
-          <p className="font-typewriter text-xs text-[#68795A] mt-1">
+          <p className="font-ui text-xs text-[#68795A] mt-1">
             {photos.length} recuerdos capturados con película vintage
           </p>
         </div>
@@ -103,7 +103,7 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
               <div className="font-serif-vintage font-bold text-base text-[#2C241E]">
                 Descargar todas las Polaroid
               </div>
-              <p className="font-typewriter text-xs text-[#2C241E]/60 mt-0.5">
+              <p className="font-ui text-xs text-[#2C241E]/60 mt-0.5">
                 Cada foto revelada con marco analógico, lino y tipografía
               </p>
             </div>
@@ -120,7 +120,7 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
               <div className="font-serif-vintage font-bold text-base text-[#2C241E]">
                 Imprimir Diario de Recuerdos
               </div>
-              <p className="font-typewriter text-xs text-[#2C241E]/60 mt-0.5">
+              <p className="font-ui text-xs text-[#2C241E]/60 mt-0.5">
                 Hoja de contactos imprimible en alta definición
               </p>
             </div>
@@ -130,7 +130,7 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
         {/* Progress Bar if downloading */}
         {downloading && (
           <div className="mb-6 p-4 bg-[#F4EFE6] rounded-xl border border-[#D4C7B5]/60">
-            <div className="flex justify-between text-xs font-typewriter text-[#2C241E] mb-2">
+            <div className="flex justify-between text-xs font-ui text-[#2C241E] mb-2">
               <span>Revelando recuerdos...</span>
               <span>{progress}%</span>
             </div>
@@ -144,13 +144,13 @@ export const DownloadAlbumModal: React.FC<DownloadAlbumModalProps> = ({
         )}
 
         {completed && (
-          <div className="mb-6 p-3 bg-[#68795A]/15 border border-[#68795A]/30 rounded-xl flex items-center gap-2 text-xs font-typewriter text-[#68795A]">
+          <div className="mb-6 p-3 bg-[#68795A]/15 border border-[#68795A]/30 rounded-xl flex items-center gap-2 text-xs font-ui text-[#68795A]">
             <Check size={16} />
             <span>¡Todos los recuerdos se descargaron con éxito!</span>
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-[#2C241E]/50 font-typewriter pt-3 border-t border-[#D4C7B5]/40">
+        <div className="flex items-center justify-between text-xs text-[#2C241E]/50 font-ui pt-3 border-t border-[#D4C7B5]/40">
           <span>{eventConfig.title}</span>
           <WatermarkFond size="sm" variant="dark" />
         </div>

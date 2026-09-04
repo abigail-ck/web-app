@@ -75,11 +75,11 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
       <header className="relative z-10 w-full pt-8 pb-4 px-4 sm:px-8 max-w-4xl mx-auto text-center flex flex-col items-center">
         {/* Origin Badge */}
         <div className="flex items-center gap-2 mb-2">
-          <span className="font-typewriter text-xs tracking-[0.25em] text-[#68795A] uppercase">
+          <span className="font-ui text-xs tracking-[0.25em] text-[#68795A] uppercase">
             {eventConfig.dateOrigin}
           </span>
           <span className="text-[#D4A373] text-xs">•</span>
-          <span className="font-typewriter text-xs tracking-widest text-[#2C241E]/60 uppercase">
+          <span className="font-ui text-xs tracking-widest text-[#2C241E]/60 uppercase">
             Jardín Privado
           </span>
         </div>
@@ -104,7 +104,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
               <div className="font-serif-vintage text-2xl sm:text-3xl font-bold text-[#2C241E]">
                 {totalMomentsFormatted}
               </div>
-              <div className="font-typewriter text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">
+              <div className="font-ui text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">
                 Momentos
               </div>
             </div>
@@ -114,7 +114,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
               <div className="font-serif-vintage text-2xl sm:text-3xl font-bold text-[#68795A] flex items-center justify-center gap-1">
                 <span>{formatCountdown(timeLeft)}</span>
               </div>
-              <div className="font-typewriter text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">
+              <div className="font-ui text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5">
                 Tiempo Restante
               </div>
             </div>
@@ -127,7 +127,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
               <div className="font-serif-vintage text-2xl sm:text-3xl font-bold text-[#C48B9F] group-hover:scale-105 transition-transform">
                 {eventConfig.totalPeople}
               </div>
-              <div className="font-typewriter text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5 flex items-center justify-center gap-1">
+              <div className="font-ui text-[11px] sm:text-xs text-[#2C241E]/60 uppercase tracking-wider mt-0.5 flex items-center justify-center gap-1">
                 <span>Invitados</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C48B9F]" />
               </div>
@@ -154,8 +154,8 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             <div className="w-8 h-8 rounded-full bg-[#2C241E] text-[#FAF7F0] flex items-center justify-center group-hover:rotate-12 transition-transform">
               <Camera size={18} />
             </div>
-            <span className="font-serif-vintage font-bold text-base sm:text-lg tracking-wide">
-              Tomar Foto
+            <span className="font-serif-vintage font-semibold text-base sm:text-lg tracking-wide">
+              Capturar un momento
             </span>
           </button>
 
@@ -178,7 +178,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             <span className="font-serif-vintage text-lg font-semibold text-[#2C241E]">
               Carrete del Evento
             </span>
-            <span className="text-xs font-typewriter text-[#68795A] bg-[#68795A]/10 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-ui text-[#68795A] bg-[#68795A]/10 px-2 py-0.5 rounded-full">
               {photos.length} reveladas
             </span>
           </div>
@@ -186,17 +186,17 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
           <div className="flex items-center gap-1.5 bg-[#FAF7F0] p-1 rounded-xl border border-[#D4C7B5]">
             <button
               onClick={() => setViewMode('stacked')}
-              className={`px-3 py-1 rounded-lg text-xs font-typewriter transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-ui transition-all cursor-pointer ${
                 viewMode === 'stacked'
                   ? 'bg-[#2C241E] text-[#FAF7F0] font-bold shadow-sm'
                   : 'text-[#2C241E]/70 hover:text-[#2C241E]'
               }`}
             >
-              Mazo Polaroid
+              Polaroids
             </button>
             <button
               onClick={() => setViewMode('grid')}
-              className={`px-3 py-1 rounded-lg text-xs font-typewriter transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-ui transition-all cursor-pointer ${
                 viewMode === 'grid'
                   ? 'bg-[#2C241E] text-[#FAF7F0] font-bold shadow-sm'
                   : 'text-[#2C241E]/70 hover:text-[#2C241E]'
@@ -213,12 +213,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
             {/* Featured Hero Polaroid with Interactive Stack */}
             <div className="relative w-full max-w-md mx-auto py-2">
               {photos.length > 0 && (
-                <div className="relative">
-                  {/* Underneath Stacked Ghost Polaroids for 3D Layering effect */}
-                  <div className="absolute inset-0 translate-x-3 translate-y-3 rotate-3 bg-[#FAF7F0] rounded-md border border-[#D4C7B5]/50 shadow-md opacity-70 pointer-events-none" />
-                  <div className="absolute inset-0 -translate-x-2.5 translate-y-2 -rotate-2 bg-[#FAF7F0] rounded-md border border-[#D4C7B5]/50 shadow-md opacity-70 pointer-events-none" />
-
-                  {/* Active Top Polaroid */}
+                <div className="relative max-w-[360px] mx-auto">
                   <PolaroidCard
                     photo={photos[activePhotoIndex % photos.length]}
                     isStacked={false}
@@ -241,7 +236,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
                   <ChevronLeft size={20} />
                 </button>
 
-                <div className="font-typewriter text-xs text-[#68795A]">
+                <div className="font-ui text-xs text-[#68795A]">
                   Recuerdo {((activePhotoIndex % photos.length) + 1)} de {photos.length}
                 </div>
 
@@ -267,13 +262,11 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
                       key={photo.id}
                       onClick={() => setActivePhotoIndex(idx)}
                       style={{ transform: `rotate(${photo.rotationDeg * 0.7}deg)` }}
-                      className={`w-32 sm:w-36 bg-[#FAF7F0] p-2 rounded polaroid-frame border transition-all cursor-pointer ${
-                        isSelected
-                          ? 'border-[#2C241E] scale-105 z-10 shadow-lg'
-                          : 'border-[#D4C7B5]/60 opacity-80 hover:opacity-100 hover:scale-102'
+                      className={`relative w-28 sm:w-32 p-2 pb-5 polaroid-frame transition-all cursor-pointer ${
+                        isSelected ? 'scale-105 z-10' : 'opacity-80 hover:opacity-100'
                       }`}
                     >
-                      <div className="aspect-[4/5] rounded-[1px] overflow-hidden bg-[#2C241E] mb-1.5">
+                      <div className="aspect-square overflow-hidden bg-[#CFC2AD] polaroid-photo mb-1.5">
                         <img
                           src={photo.url}
                           alt="Miniatura"
@@ -281,7 +274,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
                           loading="lazy"
                         />
                       </div>
-                      <div className="font-typewriter text-[10px] truncate text-[#2C241E] font-medium">
+                      <div className="font-ui text-[10px] truncate text-[#2C241E] font-medium">
                         {photo.author}
                       </div>
                     </div>
@@ -311,7 +304,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
       {/* Footer with Watermark 'fond' */}
       <footer className="relative z-10 w-full py-8 text-center border-t border-[#D4C7B5]/60 bg-[#FAF7F0]/60">
         <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2 text-xs font-typewriter text-[#2C241E]/50">
+          <div className="flex items-center gap-2 text-xs font-ui text-[#2C241E]/50">
             <span>{eventConfig.title}</span>
             <span>•</span>
             <span>{eventConfig.dateOrigin}</span>

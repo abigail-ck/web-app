@@ -3,7 +3,7 @@ import { Contributor, EventConfig, EventPhoto } from '../types';
 export const INITIAL_EVENT_CONFIG: EventConfig = {
   title: 'Boda de Emma & Daniel',
   subtitle: 'Jardín Privado • Finca Los Rosales',
-  dateOrigin: 'ES.1983',
+  dateOrigin: 'ES.2026',
   welcomeTitle: 'Bienvenidos al Jardín de Recuerdos',
   welcomeSubtitle: 'Cada rincón es una composición viva y entrañable, concebida para emocionar, conectar y perdurar.',
   heroWord: 'JARDÍN',

@@ -45,7 +45,7 @@ export interface Contributor {
 export interface EventConfig {
   title: string;
   subtitle: string;
-  dateOrigin: string; // e.g. "FR.1983"
+  dateOrigin: string; // e.g. "ES.2026"
   welcomeTitle: string;
   welcomeSubtitle: string;
   heroWord: string; // letters scattered over the splash photo

@@ -48,7 +48,7 @@ export const PhotoDetailModal: React.FC<PhotoDetailModalProps> = ({
   const handleDownloadPolaroid = async () => {
     setIsExporting(true);
     try {
-      const exportUrl = await createPolaroidExport(photo.url, photo.author, photo.caption, 'ES.1983');
+      const exportUrl = await createPolaroidExport(photo.url, photo.author, photo.caption, 'ES.2026');
       const link = document.createElement('a');
       link.href = exportUrl;
       link.download = `JardinDeRecuerdos_${photo.author}_${photo.id}.jpg`;

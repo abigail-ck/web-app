@@ -224,7 +224,7 @@ export async function createPolaroidExport(
   photoUrl: string,
   author: string,
   caption?: string,
-  dateStr = 'FR.1983'
+  dateStr = 'ES.2026'
 ): Promise<string> {
   return new Promise((resolve) => {
     const img = new Image();

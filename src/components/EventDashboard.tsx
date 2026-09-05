@@ -29,6 +29,14 @@ export const formatCountdown = (seconds: number) => {
   return `${minutes}m`;
 };
 
+/** Splits a title on '&' so the ampersand can use a plain glyph. */
+const renderWithPlainAmpersand = (text: string) =>
+  text.split('&').flatMap((part, i, arr) =>
+    i < arr.length - 1
+      ? [part, <span key={`amp-${i}`} className="amp">&amp;</span>]
+      : [part]
+  );
+
 export const EventDashboard: React.FC<EventDashboardProps> = ({
   eventConfig,
   myPhotos,
@@ -89,7 +97,7 @@ export const EventDashboard: React.FC<EventDashboardProps> = ({
         </div>
 
         <h1 className="font-display text-2xl leading-[1.15] sm:text-3xl md:text-[2.125rem] font-medium text-[#2C241E] mt-4 [text-wrap:balance]">
-          {eventConfig.title}
+          {renderWithPlainAmpersand(eventConfig.title)}
         </h1>
         <p className="font-ui text-[13px] sm:text-sm text-[#68795A] mt-1.5">{eventConfig.subtitle}</p>
 

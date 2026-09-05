@@ -45,12 +45,12 @@
   font-family: 'Patrick Hand', 'Segoe Print', 'Bradley Hand', cursive;
 }
 
-/* Plain ampersand inside Fraunces headings (its own & has a long swash tail) */
+/* Fraunces draws a swash-tailed & at display optical sizes; pinning the
+   ampersand to the text optical size gives the plain form (as seen in
+   smaller headings) while staying in Fraunces. */
 .amp {
-  font-family: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 500;
-  font-size: 0.92em;
-  letter-spacing: 0;
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 12, "SOFT" 50;
 }
 
 .font-logo {

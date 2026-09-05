@@ -29,7 +29,7 @@ export const formatCountdown = (seconds: number) => {
   return `${minutes}m`;
 };
 
-/** Splits a title on '&' so the ampersand can use a plain glyph. */
+/** Splits a title on '&' so the ampersand can use Fraunces' plain (text-size) form. */
 const renderWithPlainAmpersand = (text: string) =>
   text.split('&').flatMap((part, i, arr) =>
     i < arr.length - 1
